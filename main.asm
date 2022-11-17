@@ -30,42 +30,38 @@ EXIT:
 #=============================+
 
 PRINT_BLOCK: # (a0 => Block Line, a1 => Block Col, a2 => Color)
-	# Width = 16, Height = 16
+	# (Width = 16, Height = 16) => The screen has 320X240, so you will have a grid with 20x15
 	mv t0, a2			# t0 = Color Address
-	li t1, 0			# t1 = Current Line
+	li t1, 0			# t1 = Line Counter
 	
 NEW_BLOCK_LINE:
-	# Next Line Address = 0XFF000000 + 320.LineCounter + Block_Col * width + 320 * Block_Line * height
-	# Pixel_Cell_Address = 0XFF000000 + 320 * (line_counter + 16 * pixel_line)
-	# Next Line Address = 0XFF000000 + 320.(lineCounter + Block_Line * height) + Block_Col * width
-	
-	# Pixel_Cell_Address = 0XFF000000 + 320.line_counter + Pixel_Col * 16 + 320 * Pixel_Line * 16
-	# Pixel_Cell_Address = 0XFF000000 + 16*2*10*line_counter + Pixel_Col * 16 + 16 * 2 * 10 * Pixel_Line * 16
-	# Pixel_Cell_Address = 0XFF000000 + 16 * (2 * 10 * line_counter + Pixel_Col + 2 * 10 * pixel_line)
-	# Pixel_Cell_Address = 0XFF000000 + 64 * 5 * (line_counter + pixel_line * 16) + 16 * Pixel_Col
+	# Pixel_Cell_Address = Represents the start address(or pixel) where the block will be printed
+	# Pixel_Cell_Address = 0XFF000000 + 320 * line_counter + block_col * width + 320 * block_line * height
+	# Pixel_Cell_Address = 0XFF000000 + 320 * line_counter + block_col * 16 + 320 * block_line * 16
+	# Pixel_Cell_Address = 0XFF000000 + 64 * 5 * (line_counter + block_line * 16) + 16 * block_Col
 
-	slli t2, a0, 4
-	add t2, t2, t1			# t2 = t1 + a0 = lineCounter + pixel_line
+	slli t2, a0, 4			# t2 = a0 << 4 = a0 * 16 = pixel_line * 16
+	add t2, t2, t1			# t2 = t2 + t1 =  pixel_line * 16 + line_counter
 	li t3, 5			# t3 = 5
-	mul t2, t2, t3			# t2 = t2 * t3 = t2 * 5
-	slli t2, t2, 6			# t2 = t2 << 6 = t2 * 64
+	mul t2, t2, t3			# t2 = t2 * t3 = t2 * 5 = (pixel_line * 16 + line_counter) * 5
+	slli t2, t2, 6			# t2 = t2 << 6 = t2 * 64 = (pixel_line * 16 + line_counter) * 5 * 64
 	slli t3, a1, 4			# t3 = a1 << 4 = block_col * 16
-	add t2, t2, t3			# t2 = t2 + t3
-	li t3, 0xFF000000
-	add t2, t2, t3 			# t2 = t2 + 0XFF000000
+	add t2, t2, t3			# t2 = t2 + t3 = (pixel_line * 16 + line_counter) * 5 * 64 + block_col * 16
+	li t3, 0xFF000000		# t3 = 0xFF000000
+	add t2, t2, t3 			# t2 = (pixel_line * 16 + line_counter) * 5 * 64 + block_col * 16 + 0XFF000000
 	
-	li t3, 0
-	li t4, 4
-STORE_BLOCK_COLOR:
-	lw t5, 0(t0)			
-	sw t5, 0(t2)
-	addi t0, t0, 4
-	addi t2, t2, 4
-	addi t3, t3, 1
-	bne t3, t4, STORE_BLOCK_COLOR
+	li t3, 0			# temporary column counter
+	li t4, 4			# maximum from column counter
+STORE_BLOCK_COLOR:			# Store the colors from a single line
+	lw t5, 0(t0)			# t5 = R[t0] = Load a word from the color 'block address'
+	sw t5, 0(t2)			# t2 = R[t5] = Store the loaded color in Pixel_Cell_Address[0], ..., Pixel_Cell_Address[3]
+	addi t0, t0, 4			# t0 += 4 = Next colors from 'block address'
+	addi t2, t2, 4			# t2 += 4 = Next Address to store the colors
+	addi t3, t3, 1			# t3 += 1 = Increase counter
+	bne t3, t4, STORE_BLOCK_COLOR	# if t3 != t4, then new storage  
 	
-	addi t1, t1, 1
-	li t2, 16
+	addi t1, t1, 1			# t1 += 1 = Next line
+	li t2, 16			# t2 = 16 = Maximum of lines
 	
-	bne t2, t1, NEW_BLOCK_LINE
+	bne t2, t1, NEW_BLOCK_LINE	# if t1 != t2, then NEW_BLOCK_LINE
 	ret
