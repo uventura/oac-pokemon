@@ -1,16 +1,37 @@
 .data
 	.include "sprites/grass1.s"
+	.include "sprites/ground1.s"
+	
+MAP_1:
+	.byte 
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+
 .text
 	li a3, 0
 	li a4, 0
+	la a5, MAP_1
 
 PRINT_MAP:
 	mv a0, a4
 	mv a1, a3
-	la a2, grass1 # Block Address
-	addi a2, a2, 8
-	jal PRINT_BLOCK
+	lb a2, 0(a5)
+	jal BLOCK_SELECTION
 	
+	addi a5, a5, 1
 	addi a3, a3, 1
 	li t0, 20
 	bne t0, a3, PRINT_MAP
@@ -24,7 +45,30 @@ EXIT:
 	# Exit
 	li a7, 10
 	ecall
-	
+
+#=============================+
+#	BLOCKS SELECTION      |
+#=============================+
+
+# a0 => Block Line, a1 => Block Col, a2 => Type of Block
+BLOCK_SELECTION:
+	li t0, 1
+	beq a2, t0, BLOCK_1
+	li t0, 2
+	beq a2, t0, BLOCK_2
+	ret
+BLOCK_1:
+	la a2, grass1
+	j PRINT_BLOCK_SELECTED
+BLOCK_2:
+	la a2, ground1
+	j PRINT_BLOCK_SELECTED
+PRINT_BLOCK_SELECTED:
+	addi a2, a2, 8
+	j PRINT_BLOCK
+END_BLOCK_SELECTION:
+	ret
+
 #=============================+
 #         PRINT BLOCK	      |
 #=============================+
@@ -64,4 +108,4 @@ STORE_BLOCK_COLOR:			# Store the colors from a single line
 	li t2, 16			# t2 = 16 = Maximum of lines
 	
 	bne t2, t1, NEW_BLOCK_LINE	# if t1 != t2, then NEW_BLOCK_LINE
-	ret
+	j END_BLOCK_SELECTION
