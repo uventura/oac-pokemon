@@ -21,7 +21,7 @@ O endereço inicial da tela do Rars fica em 0xFF000000, neste endereço fica o p
 Caso queira ver a implementação deste algoritmo no Rars [veja aqui](https://github.com/uventura/oac-pokemon/commit/084e105225393eee9755fb119f166f19293c619b#diff-70b4420e73c383519f631737ef4cb31e83dd64c1b58fe28f7495322ad8ec779eR32), algumas otimizações foram feitas para lidar com o fato de termos 16x16 como tamanho dos blocos.
 
 ## Offset
-    Suponha que você queira exibir um bloco que não esteja nas células de 20x15, talvez localizações não exatas, neste caso você pode utilizar o conceito de offset, que irá criar um deslocamento de x pixels ao invés de começar a partir de 0XFF000000, assim o bloco poderá ter movimentações não usuais, assim a nova fórmula será:
+Suponha que você queira exibir um bloco que não esteja nas células de 20x15, talvez localizações não exatas, neste caso você pode utilizar o conceito de offset, que irá criar um deslocamento de x pixels ao invés de começar a partir de 0XFF000000, assim o bloco poderá ter movimentações não usuais, assim a nova fórmula será:
 
 ```
 0XFF000000 + 320 * linha_atual_do_bloco + j * largura + 320 * i * altura + offset
