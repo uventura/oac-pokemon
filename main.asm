@@ -1,11 +1,12 @@
 .data
 	.include "sprites/grass1.s"
 	.include "sprites/ground1.s"
+	.include "sprites/temp_character.s"
 	
 MAP_1:
 	.byte 
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 	1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,
@@ -60,12 +61,17 @@ BLOCK_SELECTION:
 	beq a2, t0, BLOCK_1	# if a2 == 1, then BLOCK_1
 	li t0, 2		
 	beq a2, t0, BLOCK_2	# if a2 == 2, then BLOCK_2
+	li t0, 3
+	beq a2, t0, BLOCK_3	# Temporary Character
 	ret
 BLOCK_1:
 	la a2, grass1
 	j PRINT_BLOCK_SELECTED
 BLOCK_2:
 	la a2, ground1
+	j PRINT_BLOCK_SELECTED
+BLOCK_3:	# Temporary Character
+	la a2, Lolo11
 	j PRINT_BLOCK_SELECTED
 PRINT_BLOCK_SELECTED:
 	addi a2, a2, 8
