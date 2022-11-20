@@ -112,12 +112,6 @@ int main()
                 (put_in_channel(data[p + 2], 7))   // B
             );
 
-            printf("%d %d %d\n",
-                put_in_channel(data[p + 0], 3),
-                put_in_channel(data[p + 1], 7),
-                put_in_channel(data[p + 2], 7)    
-            );
-
             ++col_counter;
             if(col_counter == 16)
             {
