@@ -13,33 +13,35 @@ MAP_1:
 	1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,2,2,1,2,2,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,2,2,1,2,2,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,2,1,1,1,2,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 
 .text
-	li a3, 0
-	li a4, 0
-	la a5, MAP_1
 
 PRINT_MAP:
-	mv a0, a4
-	mv a1, a3
-	lb a2, 0(a5)
-	jal BLOCK_SELECTION
+	li a3, 0			# Current Line
+	li a4, 0			# Current Col
+	la a5, MAP_1			# Current Map
+
+LOOP_PRINT_MAP:
+	mv a0, a4			# a0 = a4 = Current Block Line
+	mv a1, a3			# a1 = a3 = Current Block Col
+	lb a2, 0(a5)			# a2 = R[a5] = Current Block Type
+	jal BLOCK_SELECTION		# Jump to BLOCK_SELECTION
 	
-	addi a5, a5, 1
-	addi a3, a3, 1
-	li t0, 20
-	bne t0, a3, PRINT_MAP
+	addi a5, a5, 1			# a5 += 1 => New Block Selected
+	addi a3, a3, 1			# a3 += 1 => New Col
+	li t0, 20			# t0 = 20
+	bne t0, a3, LOOP_PRINT_MAP	# if t0 == a3, then NEW_LINE_MAP
 NEW_LINE_MAP:
-	addi a4, a4, 1
-	li a3, 0
-	li t0, 15
-	bne t0, a4, PRINT_MAP
+	addi a4, a4, 1			# a4 += 1 => New Line
+	li a3, 0			# a3 = 0 => Reset Col
+	li t0, 15			# t0 = 15
+	bne t0, a4, LOOP_PRINT_MAP	# if t0 == a4, then PRINT_MAP
 	
 EXIT:
 	# Exit
