@@ -16,10 +16,27 @@ O endereço inicial da tela do Rars fica em 0xFF000000, neste endereço fica o p
 0XFF000000 + 320 * linha_atual_do_bloco + j * largura + 320 * i * altura
 ```
 
-```linha_atual_do_bloco``` indica em qual das linhas do bloco exibido estamos, ou seja, como o bloco possui uma altura a, então teremos que linha_atual_do_bloco irá ter um loop onde ```linha_atual_do_bloco = 1```, ```linha_atual_do_bloco = 2```, ..., ```linha_atual_do_bloco = a```.
+```linha_atual_do_bloco``` indica em qual das linhas do bloco exibido estamos, ou seja, como o bloco possui uma altura a, então teremos que ```linha_atual_do_bloco``` irá ter um loop onde ```linha_atual_do_bloco = 1```, ```linha_atual_do_bloco = 2```, ..., ```linha_atual_do_bloco = a```.
 
 Caso queira ver a implementação deste algoritmo no Rars [veja aqui](https://github.com/uventura/oac-pokemon/commit/084e105225393eee9755fb119f166f19293c619b#diff-70b4420e73c383519f631737ef4cb31e83dd64c1b58fe28f7495322ad8ec779eR32), algumas otimizações foram feitas para lidar com o fato de termos 16x16 como tamanho dos blocos.
 
+## Offset
+    Suponha que você queira exibir um bloco que não esteja nas células de 20x15, talvez localizações não exatas, neste caso você pode utilizar o conceito de offset, que irá criar um deslocamento de x pixels ao invés de começar a partir de 0XFF000000, assim o bloco poderá ter movimentações não usuais, assim a nova fórmula será:
+
+```
+0XFF000000 + 320 * linha_atual_do_bloco + j * largura + 320 * i * altura + offset
+```
+
 # Introdução a exibição de mapas
 
-[TODO]
+Considere que você tenha uma matriz de blocos de dimensões PxQ, neste caso qual seria a forma ideal de definir qual a localização de cada bloco?
+
+Para o caso exemplificado anteriormente temos uma matriz de 20x15 blocos, caso associassemos um número a cada bloco de 16x16 é possível então criar uma matriz de 20x15, onde cada célula terá um número e aquele número refere-se ao bloco naquela posição, assim teremos algo como o exemplo abaixo:
+
+Matriz de blocos:
+
+<img src="images/map_solution1.png"/>
+
+Resultado:
+
+<img src="images/map_solution2.png"/>
