@@ -23,25 +23,26 @@ MAP_1:
 .text
 
 PRINT_MAP:
-	li a3, 0			# Current Line
-	li a4, 0			# Current Col
-	la a5, MAP_1			# Current Map
+	li s0, 0			# Current Line a3
+	li s1, 0			# Current Col a4
+	la s2, MAP_1			# Current Map a5
 
 LOOP_PRINT_MAP:
-	mv a0, a4			# a0 = a4 = Current Block Line
-	mv a1, a3			# a1 = a3 = Current Block Col
-	lb a2, 0(a5)			# a2 = R[a5] = Current Block Type
+	mv a0, s1			# a0 = a4 = Current Block Line
+	mv a1, s0			# a1 = a3 = Current Block Col
+	lb a2, 0(s2)			# a2 = R[a5] = Current Block Type
+	li a3, 0			# a3 = 0 = Offset
 	jal BLOCK_SELECTION		# Jump to BLOCK_SELECTION
 	
-	addi a5, a5, 1			# a5 += 1 => New Block Selected
-	addi a3, a3, 1			# a3 += 1 => New Col
+	addi s2, s2, 1			# a5 += 1 => New Block Selected
+	addi s0, s0, 1			# a3 += 1 => New Col
 	li t0, 20			# t0 = 20
-	bne t0, a3, LOOP_PRINT_MAP	# if t0 == a3, then NEW_LINE_MAP
+	bne t0, s0, LOOP_PRINT_MAP	# if t0 == a3, then NEW_LINE_MAP
 NEW_LINE_MAP:
-	addi a4, a4, 1			# a4 += 1 => New Line
-	li a3, 0			# a3 = 0 => Reset Col
+	addi s1, s1, 1			# a4 += 1 => New Line
+	li s0, 0			# a3 = 0 => Reset Col
 	li t0, 15			# t0 = 15
-	bne t0, a4, LOOP_PRINT_MAP	# if t0 == a4, then PRINT_MAP
+	bne t0, s1, LOOP_PRINT_MAP	# if t0 == a4, then PRINT_MAP
 	
 EXIT:
 	# Exit
@@ -53,7 +54,7 @@ EXIT:
 #=============================+
 # This procedure allows you to select blocks that you define in some map
 
-# a0 => Block Line, a1 => Block Col, a2 => Type of Block
+# a0 => Block Line, a1 => Block Col, a2 => Type of Block, a3 => Offset
 BLOCK_SELECTION:
 	li t0, 1		
 	beq a2, t0, BLOCK_1	# if a2 == 1, then BLOCK_1
@@ -96,6 +97,7 @@ NEW_BLOCK_LINE:
 	add t2, t2, t3			# t2 = t2 + t3 = (pixel_line * 16 + line_counter) * 5 * 64 + block_col * 16
 	li t3, 0xFF000000		# t3 = 0xFF000000
 	add t2, t2, t3 			# t2 = (pixel_line * 16 + line_counter) * 5 * 64 + block_col * 16 + 0XFF000000
+	add t2, t2, a3			# t2 += a3 = Offset => Allows you move the started position from pixels
 	
 	li t3, 0			# temporary column counter
 	li t4, 4			# maximum from column counter
