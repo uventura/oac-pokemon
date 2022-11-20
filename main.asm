@@ -72,6 +72,7 @@ BLOCK_2:
 	j PRINT_BLOCK_SELECTED
 BLOCK_3:	# Temporary Character
 	la a2, Lolo11
+	li a3, 8
 	j PRINT_BLOCK_SELECTED
 PRINT_BLOCK_SELECTED:
 	addi a2, a2, 8
