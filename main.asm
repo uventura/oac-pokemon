@@ -1,12 +1,12 @@
 .data
 	.include "sprites/grass1.s"
 	.include "sprites/ground1.s"
-	.include "sprites/temp_character.s"
+	.include "sprites/temp_char.s"
 	
 MAP_1:
 	.byte 
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 	1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,
@@ -44,7 +44,13 @@ NEW_LINE_MAP:
 	li s0, 0			# a3 = 0 => Reset Col
 	li t0, 15			# t0 = 15
 	bne t0, s1, LOOP_PRINT_MAP	# if t0 == a4, then PRINT_MAP
-	
+
+PRINT_TEMP_CHAR: # Only to test offset functionality
+	li a0, 4
+	li a1, 5
+	li a2, 3
+	li a3, 8
+	jal BLOCK_SELECTION
 EXIT:
 	# Exit
 	li a7, 10
@@ -71,8 +77,7 @@ BLOCK_2:
 	la a2, ground1
 	j PRINT_BLOCK_SELECTED
 BLOCK_3:	# Temporary Character
-	la a2, Lolo11
-	li a3, 8
+	la a2, temp_char
 	j PRINT_BLOCK_SELECTED
 PRINT_BLOCK_SELECTED:
 	addi a2, a2, 8
