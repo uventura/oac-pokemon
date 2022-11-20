@@ -1,0 +1,6 @@
+1 => grass
+2 => border_grass1
+3 => border_grass2
+4 => border_grass3
+5 => border_grass4
+6 => ground
