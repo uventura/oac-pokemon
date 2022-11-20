@@ -49,13 +49,14 @@ EXIT:
 #=============================+
 #	BLOCKS SELECTION      |
 #=============================+
+# This procedure allows you to select blocks that you define in some map
 
 # a0 => Block Line, a1 => Block Col, a2 => Type of Block
 BLOCK_SELECTION:
-	li t0, 1
-	beq a2, t0, BLOCK_1
-	li t0, 2
-	beq a2, t0, BLOCK_2
+	li t0, 1		
+	beq a2, t0, BLOCK_1	# if a2 == 1, then BLOCK_1
+	li t0, 2		
+	beq a2, t0, BLOCK_2	# if a2 == 2, then BLOCK_2
 	ret
 BLOCK_1:
 	la a2, grass1
