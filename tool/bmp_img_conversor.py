@@ -9,6 +9,3 @@ img = Image.open(file_in)
 img = img.convert("RGB")
 file_out = file_in.strip(".png")+".bmp"
 img.save(file_out)
-
-file_out = open(file_out, 'rb')
-print(str(file_out.read()).split('\\'))
