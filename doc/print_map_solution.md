@@ -27,6 +27,12 @@ Suponha que você queira exibir um bloco que não esteja nas células de 20x15, 
 0XFF000000 + 320 * linha_atual_do_bloco + j * largura + 320 * i * altura + offset
 ```
 
+Mas a ideia de offset será decomposta em mais dimensões, assim podemos decompor em deslocamento horizontal e vertical, caso queira deslocar horizontalmente em x pixels basta fazer ```0XFF000000 + offset_x```, para criar o vertical ```0XFF000000 + 320 * offset_y```, assim a fórmula ficará:
+
+```
+0XFF000000 + 320 * linha_atual_do_bloco + j * largura + 320 * i * altura + offset_x + 320 * offset_y
+```
+
 # Introdução a exibição de mapas
 
 Considere que você tenha uma matriz de blocos de dimensões PxQ, neste caso qual seria a forma ideal de definir qual a localização de cada bloco?
