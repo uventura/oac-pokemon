@@ -9,20 +9,19 @@ MAP_1:
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,2,2,1,2,2,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,2,2,1,2,2,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,2,1,1,1,2,1,1,1,1,1,1,
+	1,1,1,1,1,1,2,2,2,1,1,1,1,2,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,2,2,1,1,1,1,2,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,2,1,1,1,2,2,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,2,2,1,1,2,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 
-.text
-
+.text	
 PRINT_MAP:
 	li s0, 0			# Current Line a3
 	li s1, 0			# Current Col a4
@@ -32,7 +31,8 @@ LOOP_PRINT_MAP:
 	mv a0, s1			# a0 = a4 = Current Block Line
 	mv a1, s0			# a1 = a3 = Current Block Col
 	lb a2, 0(s2)			# a2 = R[a5] = Current Block Type
-	li a3, 0			# a3 = 0 = Offset
+	li a3, 0			# a3 = 0 = Offset_x
+	li a3, 0			# a4 = 0 = Offset_y
 	jal BLOCK_SELECTION		# Jump to BLOCK_SELECTION
 	
 	addi s2, s2, 1			# a5 += 1 => New Block Selected
@@ -50,6 +50,7 @@ PRINT_TEMP_CHAR: # Only to test offset functionality
 	li a1, 5
 	li a2, 3
 	li a3, 8
+	li a4, 8
 	jal BLOCK_SELECTION
 EXIT:
 	# Exit
@@ -89,7 +90,7 @@ END_BLOCK_SELECTION:
 #         PRINT BLOCK	      |
 #=============================+
 
-PRINT_BLOCK: # (a0 => Block Line, a1 => Block Col, a2 => Color)
+PRINT_BLOCK: # (a0 => Block Line, a1 => Block Col, a2 => Color, a3 => offset_x, a4 => offset_y)
 	# (Width = 16, Height = 16) => The screen has 320X240, so you will have a grid with 20x15
 	mv t0, a2			# t0 = Color Address
 	li t1, 0			# t1 = Line Counter
@@ -99,6 +100,8 @@ NEW_BLOCK_LINE:
 	# Pixel_Cell_Address = 0XFF000000 + 320 * line_counter + block_col * width + 320 * block_line * height
 	# Pixel_Cell_Address = 0XFF000000 + 320 * line_counter + block_col * 16 + 320 * block_line * 16
 	# Pixel_Cell_Address = 0XFF000000 + 64 * 5 * (line_counter + block_line * 16) + 16 * block_Col
+	
+	# Pixel_Cell_Address = 0XFF000000 + 64 * 5 * (line_counter + block_line * 16) + 16 * block_Col + offset_x + offset_y
 
 	slli t2, a0, 4			# t2 = a0 << 4 = a0 * 16 = pixel_line * 16
 	add t2, t2, t1			# t2 = t2 + t1 =  pixel_line * 16 + line_counter
@@ -109,7 +112,12 @@ NEW_BLOCK_LINE:
 	add t2, t2, t3			# t2 = t2 + t3 = (pixel_line * 16 + line_counter) * 5 * 64 + block_col * 16
 	li t3, 0xFF000000		# t3 = 0xFF000000
 	add t2, t2, t3 			# t2 = (pixel_line * 16 + line_counter) * 5 * 64 + block_col * 16 + 0XFF000000
-	add t2, t2, a3			# t2 += a3 = Offset => Allows you move the started position from pixels
+	add t2, t2, a3			# t2 += a3 = Offset_x => Allows you to create an horizontal shift
+	mv t3, a4			# t3 = a4 = Offset_y  => Allows you to create a vertical shift
+	slli t3, t3, 6			# t3 << 6 = t3 * 64
+	li t4, 5			# t4 = 5
+	mul t3, t3, t4			# t3 *= 5 = Offset_y * 320
+	add t2, t2, t3			# t2 += t3 = Offset_y
 	
 	li t3, 0			# temporary column counter
 	li t4, 4			# maximum from column counter
