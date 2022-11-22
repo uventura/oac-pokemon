@@ -20,7 +20,12 @@ MAP_1:
 	1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-
+	
+OBJECT_MAP_1:
+	.byte 2				# Amount of objects
+	.byte 0, 0, 3, 0, 0		# Character Map => row, col, object, off_x, off_y
+	.byte 5, 10, 3, 4, 4		# Character Map => row, col, object, off_x, off_y
+ 
 .text	
 PRINT_MAP:
 	li s0, 0			# Current Line a3
@@ -32,7 +37,7 @@ LOOP_PRINT_MAP:
 	mv a1, s0			# a1 = a3 = Current Block Col
 	lb a2, 0(s2)			# a2 = R[a5] = Current Block Type
 	li a3, 0			# a3 = 0 = Offset_x
-	li a3, 0			# a4 = 0 = Offset_y
+	li a4, 0			# a4 = 0 = Offset_y
 	jal BLOCK_SELECTION		# Jump to BLOCK_SELECTION
 	
 	addi s2, s2, 1			# a5 += 1 => New Block Selected
@@ -52,6 +57,25 @@ PRINT_TEMP_CHAR: # Only to test offset functionality
 	li a3, 8
 	li a4, 8
 	jal BLOCK_SELECTION
+
+la s0, OBJECT_MAP_1	# Number of objects
+lb s1, 0(s0) 		# Amount of objects
+addi s0, s0, 1		# First Object
+li s2, 0		# Counter
+LOOP_OBJECT:
+	beq s1, s2, EXIT
+	addi s2, s2, 1
+	
+	lb a0, 0(s0)
+	lb a1, 1(s0)
+	lb a2, 2(s0)
+	lb a3, 3(s0)
+	lb a4, 4(s0)
+	
+	jal BLOCK_SELECTION		# Jump to BLOCK_SELECTION
+	addi s0, s0, 5
+	j LOOP_OBJECT
+
 EXIT:
 	# Exit
 	li a7, 10
