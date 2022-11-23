@@ -107,9 +107,9 @@ int main()
 
             // Bit Aspect: (BBGGGRRR)
             fprintf(saved_file, "%d,",
-                (put_in_channel(data[p + 0], 3) << 6) |      // R
-                (put_in_channel(data[p + 1], 7) << 3) | // G
-                (put_in_channel(data[p + 2], 7))   // B
+                (put_in_channel(data[p + 0], 3) << 6) |    // B
+                (put_in_channel(data[p + 1], 7) << 3) |    // G
+                (put_in_channel(data[p + 2], 7))           // R
             );
 
             ++col_counter;
