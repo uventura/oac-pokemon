@@ -33,6 +33,8 @@ Mas a ideia de offset será decomposta em mais dimensões, assim podemos decompo
 0XFF000000 + 320 * linha_atual_do_bloco + j * largura + 320 * i * altura + offset_x + 320 * offset_y
 ```
 
+> Problemas na utilização de offset: os valores de ```offset_x``` deverá ser múltiplo de 4, considerando a implementação realizada, pois para o carregamento das cores de um objeto utiliza-se funções como ```lw```, o que inviabiliza a movimentação o deslocamento de endereço em casas ímpares. O mesmo ocorreria para ```offset_y```, mas por estar sendo mutiplicado por 320 automaticamente trata-se de um múltiplo de 4.
+
 # Introdução a exibição de mapas
 
 Considere que você tenha uma matriz de blocos de dimensões PxQ, neste caso qual seria a forma ideal de definir qual a localização de cada bloco?

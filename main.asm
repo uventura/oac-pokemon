@@ -6,33 +6,120 @@
 MAP_1:
 	.byte 
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,2,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,2,1,1,
+	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,
 	1,1,1,1,1,1,2,2,2,1,1,1,1,2,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,2,2,1,1,1,1,2,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,2,1,1,1,2,2,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,2,2,1,1,2,1,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1,1,1,1,
+	1,1,2,2,1,1,1,1,1,2,2,2,2,2,2,1,1,2,1,1,
+	1,1,2,2,2,1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,
+	1,1,1,1,2,1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,
+	1,1,1,2,2,1,1,1,1,2,2,2,2,2,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-
+	
+OBJECT_MAP_1:
+	.byte 2				# Amount of objects
+	.byte 0, 0, 3, 0, 0		# Character Map => row, col, object, off_x, off_y
+	.byte 5, 10, 3, 0, 3		# Character Map => row, col, object, off_x, off_y
+ 
 .text	
-PRINT_MAP:
-	li s0, 0			# Current Line a3
-	li s1, 0			# Current Col a4
-	la s2, MAP_1			# Current Map a5
+MAIN:
+	la a0, MAP_1
+	jal PRINT_MAP
+	
+	la a0, OBJECT_MAP_1
+	jal OBJECT_RENDERING
+	
+	jal PRINT_TEMP_CHAR
+
+EXIT:
+	li a7, 10
+	ecall
+
+############################################################################
+############################################################################
+
+#================================+
+#	CHARACTER RENDERING	 |
+#================================+
+
+PRINT_TEMP_CHAR: # Only to test offset functionality
+	addi sp, sp, -4		# sp -= 4
+	sw ra, 0(sp)		# Store return address
+	
+	li a0, 4
+	li a1, 5
+	li a2, 3
+	li a3, 8
+	li a4, 8
+	jal BLOCK_SELECTION
+	
+	lw ra, 0(sp)		# return
+	ret
+
+#==============================+
+#	OBJECT RENDERING       |
+#==============================+
+
+OBJECT_RENDERING: # a0 => Object Map Address
+	addi sp, sp, -16
+	sw ra, 0(sp)
+	sw s0, 4(sp)
+	sw s1, 8(sp)
+	sw s2, 12(sp)
+	
+	mv s0, a0	# Object Map Address and the number of objects
+	lb s1, 0(s0)	# Amount of objects
+	addi s0, s0, 1	# First Object
+	li s2, 0	# Counter
+
+LOOP_OBJECT:
+	beq s1, s2, END_OBJECT_RENDERING
+	addi s2, s2, 1
+	
+	lb a0, 0(s0)
+	lb a1, 1(s0)
+	lb a2, 2(s0)
+	lb a3, 3(s0)
+	lb a4, 4(s0)
+	
+	jal BLOCK_SELECTION		# Jump to BLOCK_SELECTION
+	addi s0, s0, 5
+	j LOOP_OBJECT
+
+END_OBJECT_RENDERING:
+	lw ra, 0(sp)
+	lw s0, 4(sp)
+	lw s1, 8(sp)
+	lw s2, 12(sp)
+	ret
+
+#=======================+
+#	PRINT MAP	|
+#=======================+
+
+PRINT_MAP: # a0 = Map Selected
+
+	addi sp, sp, -16		# sp -= 16
+	sw ra, 0(sp)			# Store return address
+	sw s0, 4(sp)			# Store s0
+	sw s1, 8(sp)			# Store s1
+	sw s2, 12(sp)			# Store s2
+	
+	li s0, 0			# Current Line
+	li s1, 0			# Current Col
+	mv s2, a0			# Current Map
 
 LOOP_PRINT_MAP:
 	mv a0, s1			# a0 = a4 = Current Block Line
 	mv a1, s0			# a1 = a3 = Current Block Col
 	lb a2, 0(s2)			# a2 = R[a5] = Current Block Type
 	li a3, 0			# a3 = 0 = Offset_x
-	li a3, 0			# a4 = 0 = Offset_y
+	li a4, 0			# a4 = 0 = Offset_y
 	jal BLOCK_SELECTION		# Jump to BLOCK_SELECTION
 	
 	addi s2, s2, 1			# a5 += 1 => New Block Selected
@@ -45,24 +132,20 @@ NEW_LINE_MAP:
 	li t0, 15			# t0 = 15
 	bne t0, s1, LOOP_PRINT_MAP	# if t0 == a4, then PRINT_MAP
 
-PRINT_TEMP_CHAR: # Only to test offset functionality
-	li a0, 4
-	li a1, 5
-	li a2, 3
-	li a3, 8
-	li a4, 8
-	jal BLOCK_SELECTION
-EXIT:
-	# Exit
-	li a7, 10
-	ecall
+END_PRINT_MAP:
+	lw ra, 0(sp)			# Load return address
+	lw s0, 4(sp)			# Load s0
+	lw s1, 8(sp)			# Load s1
+	lw s2, 12(sp)			# Load s2
+	addi sp, sp, 16			# sp += 16
+	ret
 
 #=============================+
 #	BLOCKS SELECTION      |
 #=============================+
 # This procedure allows you to select blocks that you define in some map
 
-# a0 => Block Line, a1 => Block Col, a2 => Type of Block, a3 => Offset
+# a0 => Block Line, a1 => Block Col, a2 => Type of Block, a3 => Offset_x, a4 => Offset_y
 BLOCK_SELECTION:
 	li t0, 1		
 	beq a2, t0, BLOCK_1	# if a2 == 1, then BLOCK_1
