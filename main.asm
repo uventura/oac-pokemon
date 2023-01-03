@@ -6,9 +6,18 @@
 	
 	# Scenes	
 	.include "scenes/scene01.s"
+	
+#			            Lives      Type
+# Monster bitset: 0000000000000000 00000000 00000000
+PLAYER_MONSTERS: .word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	# Monsters Inventory
 
-.text	
+.text
 MAIN:
+	li s0, 0			# Player row
+	li s1, 0			# Player col
+	la s2, temp_char		# Player image
+	
+GAME_SETTING: 
 	la a0, MAP_1
 	jal PRINT_MAP
 	
@@ -16,6 +25,19 @@ MAIN:
 	jal OBJECT_RENDERING
 	
 	jal PRINT_TEMP_CHAR
+	
+GAME_LOOP:
+	# Keyboard Event
+	li t0, 0xFF200000
+	lw t1, 0(t0)
+	andi t1, t1, 0x00000001
+	
+	beqz t1, GAME_LOOP
+	jal GAME_KEYBOARD
+	
+	j GAME_LOOP
+
+END_GAME_LOOP:
 
 EXIT:
 	li a7, 10
@@ -23,6 +45,43 @@ EXIT:
 
 ############################################################################
 ############################################################################
+
+#=========================+
+#	GAME KEYBOARD	  |
+#=========================+
+GAME_KEYBOARD:
+	li t0, 0xFF200004
+	lb t0, 0(t0)
+	
+	li t1, 'w'
+	beq t0, t1, PRESS_MOVE_W
+	
+	li t1, 's'
+	beq t0, t1, PRESS_MOVE_S
+
+	li t1, 'a'
+	beq t0, t1, PRESS_MOVE_A
+	
+	li t1, 'd'
+	beq t0, t1, PRESS_MOVE_D
+	
+	li t1, 'e'
+	beq t0, t1, PRESS_EXIT
+	
+	j END_GAME_KEYBOARD
+	
+PRESS_MOVE_W:
+	ret
+PRESS_MOVE_S:
+	ret
+PRESS_MOVE_A:
+	ret
+PRESS_MOVE_D:
+	ret
+PRESS_EXIT:
+	j EXIT
+END_GAME_KEYBOARD:
+	ret
 
 #================================+
 #	CHARACTER RENDERING	 |
