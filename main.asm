@@ -2,7 +2,7 @@
 	# Sprites
 	.include "sprites/grass1.s"
 	.include "sprites/ground1.s"
-	.include "sprites/temp_char.s"
+	.include "sprites/player_1.s"
 	
 	# Scenes	
 	.include "scenes/scene01.s"
@@ -13,9 +13,9 @@ PLAYER_MONSTERS: .word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	# Monsters Inventory
 
 .text
 MAIN:
-	li s0, 0			# Player row
-	li s1, 0			# Player col
-	la s2, temp_char		# Player image
+	li s0, 3			# Player row
+	li s1, 2			# Player col
+	la s2, MAP_1			# Current Map
 	
 GAME_SETTING: 
 	la a0, MAP_1
@@ -24,7 +24,12 @@ GAME_SETTING:
 	la a0, OBJECT_MAP_1
 	jal OBJECT_RENDERING
 	
-	jal PRINT_TEMP_CHAR
+	mv a0, s0			# Lines to moves
+	mv a1, s1			# Rows to move
+	li a2, 3			# Player Image
+	li a3, 0			# Player between image
+	li a4, 0
+	jal BLOCK_SELECTION
 	
 GAME_LOOP:
 	# Keyboard Event
@@ -71,34 +76,108 @@ GAME_KEYBOARD:
 	j END_GAME_KEYBOARD
 	
 PRESS_MOVE_W:
-	ret
+	li a0, -1
+	li a1, 0
+	li a2, 3
+	li a3, 3
+	li a4, 0
+	li a5, 0
+	j MOVE_PLAYER
+	
 PRESS_MOVE_S:
-	ret
+	li a0, 1
+	li a1, 0
+	li a2, 3
+	li a3, 3
+	li a4, 0
+	li a5, 0
+	j MOVE_PLAYER
+
 PRESS_MOVE_A:
-	ret
+	li a0, 0
+	li a1, -1
+	li a2, 3
+	li a3, 3
+	li a4, 0
+	li a5, 0
+	j MOVE_PLAYER
+
 PRESS_MOVE_D:
-	ret
+	li a0, 0
+	li a1, 1
+	li a2, 3
+	li a3, 3
+	li a4, 0
+	li a5, 0
+	j MOVE_PLAYER
+
 PRESS_EXIT:
 	j EXIT
 END_GAME_KEYBOARD:
 	ret
 
-#================================+
-#	CHARACTER RENDERING	 |
-#================================+
+#===========================+
+#	MOVE CHARACTER	    |
+#===========================+
+MOVE_PLAYER:
+	# a0 => Row movement
+	# a1 => Col movement
+	# a2 => Player image
+	# a3 => Player image between
+	# a4 => Player X offset
+	# a5 => Player Y offset
+	# a6 => Current Map Address
 
-PRINT_TEMP_CHAR: # Only to test offset functionality
-	addi sp, sp, -4		# sp -= 4
-	sw ra, 0(sp)		# Store return address
+	addi sp, sp, -32
+	sw ra, 0(sp)
+	sw a0, 4(sp)
+	sw a1, 8(sp)
+	sw a2, 12(sp)
+	sw a3, 16(sp)
+	sw a4, 20(sp)
+	sw a5, 24(sp)
 	
-	li a0, 4
-	li a1, 5
-	li a2, 3
-	li a3, 8
-	li a4, 8
+	# Get Block in previous position
+	# Block_Representation(i,j) = 16*i+j => a2 = i << 4 + j, i = s0 + a0, j = s1 + a1
+	li a2, 20
+	mul a2, a2, s0
+	add a2, a2, s1
+	la t0, MAP_1
+	add a2, a2, t0
+	
+	lb a2, 0(a2)
+	
+	mv a0, a2
+	li a7, 1
+	ecall
+	
+	mv a0, s0
+	mv a1, s1
+	li a3, 0
+	li a4, 0
 	jal BLOCK_SELECTION
 	
-	lw ra, 0(sp)		# return
+	lw a0, 4(sp)
+	lw a1, 8(sp)
+	
+	add s0, s0, a0
+	add s1, s1, a1
+
+	mv a0, s0
+	mv a1, s1
+	lw a2, 12(sp)
+	li a3, 0
+	li a4, 0
+	jal BLOCK_SELECTION
+
+	#mv a0, s0
+	#mv a1, s1
+	#li a3, 0
+	#li a4, 0
+	#jal BLOCK_SELECTION
+	
+	lw ra, 0(sp)
+	addi sp, sp, 32
 	ret
 
 #==============================+
@@ -201,7 +280,7 @@ BLOCK_2:
 	la a2, ground1
 	j PRINT_BLOCK_SELECTED
 BLOCK_3:	# Temporary Character
-	la a2, temp_char
+	la a2, player_1
 	j PRINT_BLOCK_SELECTED
 PRINT_BLOCK_SELECTED:
 	addi a2, a2, 8
