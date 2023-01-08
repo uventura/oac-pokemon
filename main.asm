@@ -81,7 +81,7 @@ PRESS_MOVE_W:
 	li a2, 3
 	li a3, 3
 	li a4, 0
-	li a5, 0
+	li a5, 8
 	j MOVE_PLAYER
 	
 PRESS_MOVE_S:
@@ -90,7 +90,7 @@ PRESS_MOVE_S:
 	li a2, 3
 	li a3, 3
 	li a4, 0
-	li a5, 0
+	li a5, -8
 	j MOVE_PLAYER
 
 PRESS_MOVE_A:
@@ -127,8 +127,17 @@ MOVE_PLAYER:
 	# a4 => Player X offset
 	# a5 => Player Y offset
 	# a6 => Current Map Address
+	
+	add t0, s0, a0				# t0 = New Player Row
+	add t1, s1, a1				# t1 = New Player Col
+	li t2, 15				# t2 = 15 = Row's number
+	li t3, 20				# t3 = 20 = Col's number
+	blt t0, zero, END_GAME_KEYBOARD		# t0 < 0 	=> No movement
+	blt t1, zero, END_GAME_KEYBOARD		# t1 < 0 	=> No movement
+	bge t0, t2, END_GAME_KEYBOARD		# t0 >= 15 	=> No movement
+	bge t1, t3, END_GAME_KEYBOARD		# t1 >= 20 	=> No movement
 
-	addi sp, sp, -32
+	addi sp, sp, -36
 	sw ra, 0(sp)
 	sw a0, 4(sp)
 	sw a1, 8(sp)
@@ -138,46 +147,57 @@ MOVE_PLAYER:
 	sw a5, 24(sp)
 	
 	# Get Block in previous position
-	# Block_Representation(i,j) = 16*i+j => a2 = i << 4 + j, i = s0 + a0, j = s1 + a1
-	li a2, 20
-	mul a2, a2, s0
-	add a2, a2, s1
-	la t0, MAP_1
-	add a2, a2, t0
+	li a2, 20			# a2 = 20
+	mul a2, a2, s0			# a2 = a2 * s0 = 20 * Row
+	add a2, a2, s1			# a2 = a2 * s0 + s1 = 20 * Row + Col
+	add a2, a2, s2			# a2 = a2 * s0 + s1 + Address = 20 * Row + Col + Address
 	
-	lb a2, 0(a2)
+	lb a2, 0(a2)			# Load Block Value
+	sw a2, 28(sp)			# Store Block Value
 	
-	mv a0, a2
-	li a7, 1
-	ecall
-	
-	mv a0, s0
-	mv a1, s1
-	li a3, 0
-	li a4, 0
+	mv a0, s0			# Previous Row
+	mv a1, s1			# Preivous Col
+	li a3, 0			# Offset X
+	li a4, 0			# Offset Y
 	jal BLOCK_SELECTION
 	
-	lw a0, 4(sp)
-	lw a1, 8(sp)
+	lw a0, 4(sp)			# Movement in Row
+	lw a1, 8(sp)			# Movement in Col
 	
-	add s0, s0, a0
-	add s1, s1, a1
+	add a0, s0, a0			# a0 = s0 + delta_row
+	add a1, s1, a1			# a1 = s1 + delta_col
 
-	mv a0, s0
-	mv a1, s1
-	lw a2, 12(sp)
-	li a3, 0
-	li a4, 0
+	lw a2, 16(sp)			# Load Between Image
+	lw a3, 20(sp)			# Load X offset
+	lw a4, 24(sp)			# Load Y offset
 	jal BLOCK_SELECTION
 
-	#mv a0, s0
-	#mv a1, s1
-	#li a3, 0
-	#li a4, 0
-	#jal BLOCK_SELECTION
+	li a0, 100			# Wait 250ms
+	li a7, 32			# Sleep Action
+	ecall				# Call Sleep
+
+	mv a0, s0			# Previous Player Row
+	mv a1, s1			# Previous Player Col
+	lw a2, 28(sp)			# Get Ground
+	li a3, 0			# X Offset
+	li a4, 0			# Y Offset
+	jal BLOCK_SELECTION
 	
-	lw ra, 0(sp)
-	addi sp, sp, 32
+	lw a0, 4(sp)			# Load X Offset
+	lw a1, 8(sp)			# Load Y Offset
+
+	add s0, s0, a0			# Change Player Row
+	add s1, s1, a1			# Change Player Col
+	
+	mv a0, s0			# Load Final Player Row
+	mv a1, s1			# Load Final Player Col
+	lw a2, 12(sp)			# Load Player Final Image Value
+	li a3, 0			# X Offset
+	li a4, 0			# Y Offset
+	jal BLOCK_SELECTION
+	
+	lw ra, 0(sp)			# Recover return address
+	addi sp, sp, 36			# Back stack
 	ret
 
 #==============================+
