@@ -1,21 +1,24 @@
 .data
-	# Sprites
+	# World
 	.include "sprites/grass1.s"
 	.include "sprites/ground1.s"
+	
+	# Objects
+	.include "sprites/table_01.s"
+	.include "sprites/table_02.s"
+	
+	# Player 
 	.include "sprites/player_1.s"
 	
 	# Scenes	
 	.include "scenes/scene01.s"
-	
-#			            Lives      Type
-# Monster bitset: 0000000000000000 00000000 00000000
-PLAYER_MONSTERS: .word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	# Monsters Inventory
 
 .text
 MAIN:
 	li s0, 3			# Player row
 	li s1, 2			# Player col
 	la s2, MAP_1			# Current Map
+	la s3, OBJECT_MAP_1		# Current Object Mapping
 	
 GAME_SETTING: 
 	la a0, MAP_1
@@ -146,6 +149,12 @@ MOVE_PLAYER:
 	sw a4, 20(sp)
 	sw a5, 24(sp)
 	
+	add a0, a0, s0			# New Row Player Position
+	add a1, a1, s1			# New Col Player Position
+	jal PLAYER_COLLISION
+	
+	beq a0, zero, END_PLAYER_MOVE	# Player Collides
+	
 	# Get Block in previous position
 	li a2, 20			# a2 = 20
 	mul a2, a2, s0			# a2 = a2 * s0 = 20 * Row
@@ -172,7 +181,7 @@ MOVE_PLAYER:
 	lw a4, 24(sp)			# Load Y offset
 	jal BLOCK_SELECTION
 
-	li a0, 100			# Wait 250ms
+	li a0, 100			# Wait 100ms
 	li a7, 32			# Sleep Action
 	ecall				# Call Sleep
 
@@ -195,9 +204,48 @@ MOVE_PLAYER:
 	li a3, 0			# X Offset
 	li a4, 0			# Y Offset
 	jal BLOCK_SELECTION
-	
+
+END_PLAYER_MOVE:
 	lw ra, 0(sp)			# Recover return address
 	addi sp, sp, 36			# Back stack
+	ret
+
+#==============================+
+#	PLAYER COLISION	       |
+#==============================+
+PLAYER_COLLISION: # a0 => Row, a1 => Col; Return: a0 = 0 if collides
+	addi sp, sp, -4
+	sw ra, 0(sp)
+	
+	mv t0, s3		# t0 = Objects Address
+	lb t1, 0(t0)		# t1 = Number of Objects
+	addi t0, t0, 1		# t0 += 1 => First Object
+	li t2, 0		# t2 = Object Counter
+	mv t3, a0		# t3 = Row
+	mv t4, a1		# t4 = Col
+	
+	li a0, 1
+
+PLAYER_COLLISION_LOOP:
+	beq t1, t2, PLAYER_NOT_COLLIDES
+	addi t2, t2, 1
+	
+	lb t5, 0(t0)		# Object Row
+	lb t6, 1(t0)		# Object Col
+	
+	bne t3, t5, PLAYER_COLLISION_OTHER_OBJECT
+	bne t4, t6, PLAYER_COLLISION_OTHER_OBJECT
+	j PLAYER_COLLIDES
+	
+PLAYER_COLLISION_OTHER_OBJECT:
+	addi t0, t0, 5
+	j PLAYER_COLLISION_LOOP
+	
+PLAYER_COLLIDES:
+	li a0, 0
+PLAYER_NOT_COLLIDES:
+	lw ra, 0(sp)
+	addi sp, sp, 4
 	ret
 
 #==============================+
@@ -292,6 +340,10 @@ BLOCK_SELECTION:
 	beq a2, t0, BLOCK_2	# if a2 == 2, then BLOCK_2
 	li t0, 3
 	beq a2, t0, BLOCK_3	# Temporary Character
+	li t0, 4
+	beq a2, t0, BLOCK_4	# Table Left
+	li t0, 5
+	beq a2, t0, BLOCK_5	# Table Right
 	ret
 BLOCK_1:
 	la a2, grass1
@@ -301,6 +353,12 @@ BLOCK_2:
 	j PRINT_BLOCK_SELECTED
 BLOCK_3:	# Temporary Character
 	la a2, player_1
+	j PRINT_BLOCK_SELECTED
+BLOCK_4:
+	la a2, table_01
+	j PRINT_BLOCK_SELECTED
+BLOCK_5:
+	la a2, table_02
 	j PRINT_BLOCK_SELECTED
 PRINT_BLOCK_SELECTED:
 	addi a2, a2, 8
