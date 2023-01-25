@@ -12,6 +12,7 @@
 	
 	# Scenes	
 	.include "scenes/scene01.s"
+	.include "scenes/scene02.s"
 
 .text
 MAIN:
@@ -19,12 +20,13 @@ MAIN:
 	li s1, 2			# Player col
 	la s2, MAP_1			# Current Map
 	la s3, OBJECT_MAP_1		# Current Object Mapping
+	la s4, LOCATION_CHANGE_1	# Location to change
 	
 GAME_SETTING: 
-	la a0, MAP_1
+	mv a0, s2 
 	jal PRINT_MAP
 	
-	la a0, OBJECT_MAP_1
+	mv a0, s3
 	jal OBJECT_RENDERING
 	
 	mv a0, s0			# Lines to moves
@@ -119,6 +121,38 @@ PRESS_EXIT:
 END_GAME_KEYBOARD:
 	ret
 
+#=====================================+
+#	CHANGE CURRENT LOCATION	      |
+#=====================================+
+CHANGE_CURRENT_LOCATION: # a0 => player_row, a1 => player_col, a3 => scene
+	mv s0, a0
+	mv s1, a1
+	
+	mv a0, a3
+	li a7, 1
+	ecall
+
+	li t0, 1
+	beq t0, a3, SCENE_1
+	
+	li t0, 2
+	beq t0, a3, SCENE_2
+
+SCENE_1:
+	la s2, MAP_1		
+	la s3, OBJECT_MAP_1	
+	la s4, LOCATION_CHANGE_1
+	j END_CHANGE_CURRENT_LOCATION
+SCENE_2:
+	la s2, MAP_2
+	la s3, OBJECT_MAP_2
+	la s4, LOCATION_CHANGE_2
+	j END_CHANGE_CURRENT_LOCATION
+
+END_CHANGE_CURRENT_LOCATION:
+	la ra, GAME_SETTING
+	ret
+
 #===========================+
 #	MOVE CHARACTER	    |
 #===========================+
@@ -149,12 +183,25 @@ MOVE_PLAYER:
 	sw a4, 20(sp)
 	sw a5, 24(sp)
 	
+	# Object Collision
 	add a0, a0, s0			# New Row Player Position
 	add a1, a1, s1			# New Col Player Position
+	mv a3, s3			# Current Scene Objects
+	jal PLAYER_COLLISION
+	beqz a0, END_PLAYER_MOVE	# Player Collides
+	
+	# Location Collision
+	lw a0, 4(sp)
+	add a0, a0, s0
+	
+	lw a1, 8(sp)
+	add a1, a1, s1
+	
+	mv a3, s4
 	jal PLAYER_COLLISION
 	
-	beq a0, zero, END_PLAYER_MOVE	# Player Collides
-	
+	beqz a0, MOVE_CHANGE_CURRENT_LOCATION
+
 	# Get Block in previous position
 	li a2, 20			# a2 = 20
 	mul a2, a2, s0			# a2 = a2 * s0 = 20 * Row
@@ -209,35 +256,50 @@ END_PLAYER_MOVE:
 	lw ra, 0(sp)			# Recover return address
 	addi sp, sp, 36			# Back stack
 	ret
+MOVE_CHANGE_CURRENT_LOCATION:
+	la ra, CHANGE_CURRENT_LOCATION	# Change Current Location
+	
+	mv a3, a1			# new scene
+	lw a0, 4(sp)			# dr = Load row movement
+	lw a1, 8(sp)			# dc = Load col movement
+	add a0, a0, s0			# new_row = row + dr
+	add a1, a1, s0			# new_col = col + dc
+	
+	addi sp, sp, 36			# Free Stack Pointer
+	ret
 
 #==============================+
 #	PLAYER COLISION	       |
 #==============================+
-PLAYER_COLLISION: # a0 => Row, a1 => Col; Return: a0 = 0 if collides
+# Verify if Player collides in a place, object, person, ...
+
+PLAYER_COLLISION: # a0 => Row, a1 => Col; a3 => Element address, Return: a0 = 0 if collides with target, a1 = value_colided
 	addi sp, sp, -4
 	sw ra, 0(sp)
 	
-	mv t0, s3		# t0 = Objects Address
+	mv t0, a3		# t0 = Objects Address
 	lb t1, 0(t0)		# t1 = Number of Objects
 	addi t0, t0, 1		# t0 += 1 => First Object
 	li t2, 0		# t2 = Object Counter
 	mv t3, a0		# t3 = Row
 	mv t4, a1		# t4 = Col
 	
-	li a0, 1
+	li a0, 1		# Not collide
 
 PLAYER_COLLISION_LOOP:
 	beq t1, t2, PLAYER_NOT_COLLIDES
 	addi t2, t2, 1
 	
-	lb t5, 0(t0)		# Object Row
-	lb t6, 1(t0)		# Object Col
+	lb t5, 0(t0)		# Element Row
+	lb t6, 1(t0)		# Element Col
+	lb a1, 2(t0)		# Get current element value
 	
-	bne t3, t5, PLAYER_COLLISION_OTHER_OBJECT
-	bne t4, t6, PLAYER_COLLISION_OTHER_OBJECT
+	# Verify if there is an object in a row(t3) and col(t4)
+	bne t3, t5, PLAYER_COLLISION_OTHER_ELEMENT	# if row != current_row => Verify other Element
+	bne t4, t6, PLAYER_COLLISION_OTHER_ELEMENT	# if col != current_col => Verify other Element
 	j PLAYER_COLLIDES
 	
-PLAYER_COLLISION_OTHER_OBJECT:
+PLAYER_COLLISION_OTHER_ELEMENT:
 	addi t0, t0, 5
 	j PLAYER_COLLISION_LOOP
 	
@@ -248,6 +310,9 @@ PLAYER_NOT_COLLIDES:
 	addi sp, sp, 4
 	ret
 
+#=======================================+
+#	PLAYER COLLIDES IN ACTION	|
+#=======================================+
 #==============================+
 #	OBJECT RENDERING       |
 #==============================+
