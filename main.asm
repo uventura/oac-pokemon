@@ -183,9 +183,17 @@ MOVE_PLAYER:
 	sw a4, 20(sp)
 	sw a5, 24(sp)
 	
-	# Object Collision
 	add a0, a0, s0			# New Row Player Position
 	add a1, a1, s1			# New Col Player Position
+	
+	bltz a0, END_PLAYER_MOVE
+	bltz a1, END_PLAYER_MOVE
+	li t0, 15
+	bgt a0, t0, END_PLAYER_MOVE
+	li t0, 20
+	bgt a1, t0, END_PLAYER_MOVE
+	
+	# Object Collision
 	mv a3, s3			# Current Scene Objects
 	jal PLAYER_COLLISION
 	beqz a0, END_PLAYER_MOVE	# Player Collides
