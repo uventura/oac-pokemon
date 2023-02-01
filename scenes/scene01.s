@@ -56,5 +56,5 @@ OBJECT_MAP_1:
 
 LOCATION_CHANGE_1:
 	.byte 2							# Amount of locations
-	.byte 13, 9, 2, 0, 0			# Location => row, col, scene, zero, zero
-	.byte 13, 10, 2, 0, 0			# Location => row, col, scene, zero, zero
+	.byte 14, 9, 2, 1, 11			# Location => row, col, scene, new_player_row, new_player_col
+	.byte 14, 10, 2, 1, 12			# Location => row, col, scene, new_player_row, new_player_col

@@ -22,7 +22,8 @@ OBJECT_MAP_2:
 	#.byte 3, 5, 5, 0, 0		# Character Map => row, col, object, off_x, off_y
 
 LOCATION_CHANGE_2:
-	.byte 3							# Amount of locations
-	.byte 1, 11, 1, 0, 0			# Location => row, col, scene, zero, zero
-	.byte 7, 18, 3, 0, 0			# Location => row, col, scene, zero, zero
-	.byte 8, 18, 3, 0, 0			# Location => row, col, scene, zero, zero
+	.byte 4							# Amount of locations
+	.byte 0, 11, 1, 13, 9			# Location => row, col, scene, new_player_row, new_player_col
+	.byte 0, 12, 1, 13, 10			# Location => row, col, scene, new_player_row, new_player_col
+	.byte 7, 19, 3, 7, 1			# Location => row, col, scene, new_player_row, new_player_col
+	.byte 8, 19, 3, 8, 1			# Location => row, col, scene, new_player_row, new_player_col

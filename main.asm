@@ -153,22 +153,23 @@ END_GAME_KEYBOARD:
 #=====================================+
 #	CHANGE CURRENT LOCATION	      |
 #=====================================+
-CHANGE_CURRENT_LOCATION: # a0 => player_row, a1 => player_col, a3 => scene
+CHANGE_CURRENT_LOCATION: # a0 => player_row, a1 => player_col, a2 => scene
 	mv s0, a0
 	mv s1, a1
-	
-	mv a0, a3
+
+	mv a0, a2
+
 	li a7, 1
 	ecall
 
 	li t0, 1
-	beq t0, a3, SCENE_1
+	beq t0, a0, SCENE_1
 	
 	li t0, 2
-	beq t0, a3, SCENE_2
+	beq t0, a0, SCENE_2
 
 	li t0, 3
-	beq t0, a3, SCENE_3
+	beq t0, a0, SCENE_3
 
 SCENE_1:
 	la s2, MAP_1		
@@ -200,7 +201,6 @@ MOVE_PLAYER:
 	# a3 => Player image between
 	# a4 => Player X offset
 	# a5 => Player Y offset
-	# a6 => Current Map Address
 	
 	add t0, s0, a0				# t0 = New Player Row
 	add t1, s1, a1				# t1 = New Player Col
@@ -236,9 +236,6 @@ MOVE_PLAYER:
 	
 	mv a3, s4
 	jal PLAYER_COLLISION
-	
-	li a7, 1
-	ecall
 	
 	beqz a0, MOVE_CHANGE_CURRENT_LOCATION
 
@@ -298,13 +295,11 @@ END_PLAYER_MOVE:
 	ret
 MOVE_CHANGE_CURRENT_LOCATION:
 	la ra, CHANGE_CURRENT_LOCATION	# Change Current Location
-	
-	mv a3, a1			# new scene
-	lw a0, 4(sp)			# dr = Load row movement
-	lw a1, 8(sp)			# dc = Load col movement
-	add a0, a0, s0			# new_row = row + dr
-	add a1, a1, s1			# new_col = col + dc
-	
+	 
+	mv a2, a1				# new scene
+	mv a0, a3				# new row player location
+	mv a1, a4				# new col player location
+
 	addi sp, sp, 36			# Free Stack Pointer
 	ret
 
@@ -333,7 +328,9 @@ PLAYER_COLLISION_LOOP:
 	lb t5, 0(t0)		# Element Row
 	lb t6, 1(t0)		# Element Col
 	lb a1, 2(t0)		# Get current element value
-	
+	lb a3, 3(t0)		# Get new row for player
+	lb a4, 4(t0)		# Get new col for player
+
 	# Verify if there is an object in a row(t3) and col(t4)
 	bne t3, t5, PLAYER_COLLISION_OTHER_ELEMENT	# if row != current_row => Verify other Element
 	bne t4, t6, PLAYER_COLLISION_OTHER_ELEMENT	# if col != current_col => Verify other Element
