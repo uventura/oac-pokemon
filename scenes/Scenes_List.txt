@@ -1,0 +1,11 @@
+|==|Cena de area fechada:
+    |*| Laboratorio                                         |X| PRECISA DE AJUSTES
+    |*| Casa                                                | |
+    |*| Ginasio                                             | |
+    |*| Lugar para curar os pokemons e comprar items        | |
+
+|==|Cenas de area aberta:
+    |*| Area inicial com 2 casa e 1 laboratorio             | |
+    |*| Area só de mato                                     |X| PRECISA DE AJUSTES
+    |*| Area da cidade com ginasio e pokestop               | |
+
