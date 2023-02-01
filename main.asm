@@ -1,25 +1,54 @@
 .data
-	# World
-	.include "sprites/grass1.s"
-	.include "sprites/ground1.s"
+	# Lab_Scenario
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_livros1.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_livros2.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_livros3.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_livros4.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/floor_lab.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table10.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table11.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table20.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table21.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_windows0.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_windows1.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_windows2.data"
 	
-	# Objects
-	.include "sprites/table_01.s"
-	.include "sprites/table_02.s"
-	
+	# Wild_Scenario
+	.include "sprites/Sprites_Scenes/cenario_aberto/rass.data"
+	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge1.data"
+	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge2.data"
+	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge3.data"
+	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge4.data"
+	.include "sprites/Sprites_Scenes/cenario_aberto/river_mid.data"
+	.include "sprites/Sprites_Scenes/cenario_aberto/road_edge.data"
+	.include "sprites/Sprites_Scenes/cenario_aberto/road_mid.data"
+	.include "sprites/Sprites_Scenes/cenario_aberto/road_side.data"
+	.include "sprites/Sprites_Scenes/cenario_aberto/sprite_brush.data"
+
+	# Gym_Scenario
+	.include "sprites/Sprites_Scenes/cenario_ginasio/colunabot.data"
+	.include "sprites/Sprites_Scenes/cenario_ginasio/colunato.data"
+	.include "sprites/Sprites_Scenes/cenario_ginasio/door.data"
+	.include "sprites/Sprites_Scenes/cenario_ginasio/floor.data"
+	.include "sprites/Sprites_Scenes/cenario_ginasio/statue_bot.data"
+	.include "sprites/Sprites_Scenes/cenario_ginasio/statue_to.data"
+	.include "sprites/Sprites_Scenes/cenario_ginasio/windows1.data"
+	.include "sprites/Sprites_Scenes/cenario_ginasio/windows2.data"
+
 	# Player 
 	.include "sprites/player_1.s"
 	
 	# Scenes	
 	.include "scenes/scene01.s"
 	.include "scenes/scene02.s"
+	.include "scenes/scene03.s"
 
 .text
 MAIN:
-	li s0, 3			# Player row
-	li s1, 2			# Player col
-	la s2, MAP_1			# Current Map
-	la s3, OBJECT_MAP_1		# Current Object Mapping
+	li s0, 3					# Player row
+	li s1, 2					# Player col
+	la s2, MAP_1				# Current Map
+	la s3, OBJECT_MAP_1			# Current Object Mapping
 	la s4, LOCATION_CHANGE_1	# Location to change
 	
 GAME_SETTING: 
@@ -31,7 +60,7 @@ GAME_SETTING:
 	
 	mv a0, s0			# Lines to moves
 	mv a1, s1			# Rows to move
-	li a2, 3			# Player Image
+	li a2, 13			# Player Image
 	li a3, 0			# Player between image
 	li a4, 0
 	jal BLOCK_SELECTION
@@ -83,8 +112,8 @@ GAME_KEYBOARD:
 PRESS_MOVE_W:
 	li a0, -1
 	li a1, 0
-	li a2, 3
-	li a3, 3
+	li a2, 13
+	li a3, 13
 	li a4, 0
 	li a5, 8
 	j MOVE_PLAYER
@@ -92,8 +121,8 @@ PRESS_MOVE_W:
 PRESS_MOVE_S:
 	li a0, 1
 	li a1, 0
-	li a2, 3
-	li a3, 3
+	li a2, 13
+	li a3, 13
 	li a4, 0
 	li a5, -8
 	j MOVE_PLAYER
@@ -101,8 +130,8 @@ PRESS_MOVE_S:
 PRESS_MOVE_A:
 	li a0, 0
 	li a1, -1
-	li a2, 3
-	li a3, 3
+	li a2, 13
+	li a3, 13
 	li a4, 0
 	li a5, 0
 	j MOVE_PLAYER
@@ -110,8 +139,8 @@ PRESS_MOVE_A:
 PRESS_MOVE_D:
 	li a0, 0
 	li a1, 1
-	li a2, 3
-	li a3, 3
+	li a2, 13
+	li a3, 13
 	li a4, 0
 	li a5, 0
 	j MOVE_PLAYER
@@ -138,6 +167,9 @@ CHANGE_CURRENT_LOCATION: # a0 => player_row, a1 => player_col, a3 => scene
 	li t0, 2
 	beq t0, a3, SCENE_2
 
+	li t0, 3
+	beq t0, a3, SCENE_3
+
 SCENE_1:
 	la s2, MAP_1		
 	la s3, OBJECT_MAP_1	
@@ -147,6 +179,11 @@ SCENE_2:
 	la s2, MAP_2
 	la s3, OBJECT_MAP_2
 	la s4, LOCATION_CHANGE_2
+	j END_CHANGE_CURRENT_LOCATION
+SCENE_3:
+	la s2, MAP_3
+	la s3, OBJECT_MAP_3
+	la s4, LOCATION_CHANGE_3
 	j END_CHANGE_CURRENT_LOCATION
 
 END_CHANGE_CURRENT_LOCATION:
@@ -199,6 +236,9 @@ MOVE_PLAYER:
 	
 	mv a3, s4
 	jal PLAYER_COLLISION
+	
+	li a7, 1
+	ecall
 	
 	beqz a0, MOVE_CHANGE_CURRENT_LOCATION
 
@@ -263,7 +303,7 @@ MOVE_CHANGE_CURRENT_LOCATION:
 	lw a0, 4(sp)			# dr = Load row movement
 	lw a1, 8(sp)			# dc = Load col movement
 	add a0, a0, s0			# new_row = row + dr
-	add a1, a1, s0			# new_col = col + dc
+	add a1, a1, s1			# new_col = col + dc
 	
 	addi sp, sp, 36			# Free Stack Pointer
 	ret
@@ -399,32 +439,177 @@ END_PRINT_MAP:
 
 # a0 => Block Line, a1 => Block Col, a2 => Type of Block, a3 => Offset_x, a4 => Offset_y
 BLOCK_SELECTION:
+	# Player
+	li t0, 13		
+	beq a2, t0, PLAYER_BLOCK	
+
+	# Lab_Scenario
 	li t0, 1		
-	beq a2, t0, BLOCK_1	# if a2 == 1, then BLOCK_1
+	beq a2, t0, ESTANTE_L1	
 	li t0, 2		
-	beq a2, t0, BLOCK_2	# if a2 == 2, then BLOCK_2
+	beq a2, t0, ESTANTE_L2	
 	li t0, 3
-	beq a2, t0, BLOCK_3	# Temporary Character
+	beq a2, t0, ESTANTE_L3	
 	li t0, 4
-	beq a2, t0, BLOCK_4	# Table Left
+	beq a2, t0, ESTANTE_L4	
 	li t0, 5
-	beq a2, t0, BLOCK_5	# Table Right
+	beq a2, t0, LAB_FLOOR	
+	li t0, 6
+	beq a2, t0, LAB_TABLE10	
+	li t0, 7
+	beq a2, t0, LAB_TABLE11	
+	li t0, 8
+	beq a2, t0, LAB_TABLE20	
+	li t0, 9
+	beq a2, t0, LAB_TABLE21	
+	li t0, 10
+	beq a2, t0, LAB_WINDOW0	
+	li t0, 11
+	beq a2, t0, LAB_WINDOW1	
+	li t0, 12
+	beq a2, t0, LAB_WINDOW2
+
+	# Wild_Scenario
+	li t0, 14
+	beq a2, t0, WILD_CUT_GRASS
+	li t0, 15
+	beq a2, t0, WILD_RIVER_EDGE1
+	li t0, 16
+	beq a2, t0, WILD_RIVER_EDGE2
+	li t0, 17
+	beq a2, t0, WILD_RIVER_EDGE3
+	li t0, 18
+	beq a2, t0, WILD_RIVER_EDGE4
+	li t0, 19
+	beq a2, t0, WILD_RIVER_MID
+	li t0, 20
+	beq a2, t0, WILD_ROAD_EDGE
+	li t0, 21
+	beq a2, t0, WILD_ROAD_MID
+	li t0, 22
+	beq a2, t0, WILD_ROAD_SIDE
+	li t0, 23
+	beq a2, t0, WILD_BRUSH
+
+	# Gym_Scenario
+	li t0, 24
+	beq a2, t0, GYM_COLUNABOT
+	li t0, 25
+	beq a2, t0, GYM_COLUNATO
+	li t0, 26
+	beq a2, t0, GYM_DOOR
+	li t0, 27
+	beq a2, t0, GYM_FLOOR	
+	li t0, 28
+	beq a2, t0, GYM_STATUE_BOT
+	li t0, 29
+	beq a2, t0, GYM_STATUE_TO
+	li t0, 30
+	beq a2, t0, GYM_WINDOWS1
+	li t0, 31
+	beq a2, t0, GYM_WINDOWS2		
+
 	ret
-BLOCK_1:
-	la a2, grass1
-	j PRINT_BLOCK_SELECTED
-BLOCK_2:
-	la a2, ground1
-	j PRINT_BLOCK_SELECTED
-BLOCK_3:	# Temporary Character
+# Player
+PLAYER_BLOCK:
 	la a2, player_1
 	j PRINT_BLOCK_SELECTED
-BLOCK_4:
-	la a2, table_01
+# Lab_Scenario
+ESTANTE_L1:
+	la a2, estante_livros1
 	j PRINT_BLOCK_SELECTED
-BLOCK_5:
-	la a2, table_02
+ESTANTE_L2:
+	la a2, estante_livros2
 	j PRINT_BLOCK_SELECTED
+ESTANTE_L3:	
+	la a2, estante_livros3
+	j PRINT_BLOCK_SELECTED
+ESTANTE_L4:
+	la a2, estante_livros4
+	j PRINT_BLOCK_SELECTED
+LAB_FLOOR:
+	la a2, floor_lab
+	j PRINT_BLOCK_SELECTED
+LAB_TABLE10:
+	la a2, sprite_table10
+	j PRINT_BLOCK_SELECTED
+LAB_TABLE11:
+	la a2, sprite_table11
+	j PRINT_BLOCK_SELECTED
+LAB_TABLE20:
+	la a2, sprite_table20
+	j PRINT_BLOCK_SELECTED
+LAB_TABLE21:
+	la a2, sprite_table21
+	j PRINT_BLOCK_SELECTED
+LAB_WINDOW0:
+	la a2, sprite_windows0
+	j PRINT_BLOCK_SELECTED
+LAB_WINDOW1:
+	la a2, sprite_windows1
+	j PRINT_BLOCK_SELECTED
+LAB_WINDOW2:
+	la a2, sprite_windows2
+	j PRINT_BLOCK_SELECTED
+
+# Wild_Scenario
+WILD_CUT_GRASS:
+	la a2, rass
+	j PRINT_BLOCK_SELECTED
+WILD_RIVER_EDGE1:
+	la a2, river_edge1
+	j PRINT_BLOCK_SELECTED
+WILD_RIVER_EDGE2:
+	la a2, river_edge2
+	j PRINT_BLOCK_SELECTED
+WILD_RIVER_EDGE3:
+	la a2, river_edge3
+	j PRINT_BLOCK_SELECTED
+WILD_RIVER_EDGE4:
+	la a2, river_edge4
+	j PRINT_BLOCK_SELECTED
+WILD_RIVER_MID:
+	la a2, river_mid
+	j PRINT_BLOCK_SELECTED
+WILD_ROAD_EDGE:
+	la a2, road_edge
+	j PRINT_BLOCK_SELECTED
+WILD_ROAD_MID:
+	la a2, road_mid
+	j PRINT_BLOCK_SELECTED
+WILD_ROAD_SIDE:
+	la a2, road_side
+	j PRINT_BLOCK_SELECTED
+WILD_BRUSH:
+	la a2, sprite_brush
+	j PRINT_BLOCK_SELECTED
+
+# Gym_Scenario
+GYM_COLUNABOT:
+	la a2, colunabot
+	j PRINT_BLOCK_SELECTED
+GYM_COLUNATO:
+	la a2, colunato
+	j PRINT_BLOCK_SELECTED
+GYM_DOOR:
+	la a2, door
+	j PRINT_BLOCK_SELECTED
+GYM_FLOOR:
+	la a2, floor
+	j PRINT_BLOCK_SELECTED
+GYM_STATUE_BOT:
+	la a2, statue_bot
+	j PRINT_BLOCK_SELECTED
+GYM_STATUE_TO:
+	la a2, statue_to
+	j PRINT_BLOCK_SELECTED
+GYM_WINDOWS1:
+	la a2, windows1
+	j PRINT_BLOCK_SELECTED	
+GYM_WINDOWS2:
+	la a2, windows2
+	j PRINT_BLOCK_SELECTED
+
 PRINT_BLOCK_SELECTED:
 	addi a2, a2, 8
 	j PRINT_BLOCK
