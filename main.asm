@@ -1,45 +1,61 @@
 .data
 	# Lab_Scenario
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/door1.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/door2.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_bot1.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_bot2.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_top1.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_top2.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/floor_lab.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table10.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table11.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table20.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table21.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table22.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/wall_bottom_lab.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/wall_top_lab.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/windows_new_lab.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/door1.data"				# 1
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/door2.data"				# 2
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_bot1.data"			# 3
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_bot2.data"			# 4
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_top1.data"			# 5
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_top2.data"			# 6
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/floor_lab.data"			# 7
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table10.data"		# 8
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table11.data"		# 9
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table20.data"		# 10
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table21.data"		# 11
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table22.data"		# 12
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/wall_bottom_lab.data"		# 13
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/wall_top_lab.data"			# 14
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/windows_new_lab.data"		# 15
 	
 	# Wild_Scenario
-	.include "sprites/Sprites_Scenes/cenario_aberto/rass.data"
-	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge1.data"
-	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge2.data"
-	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge3.data"
-	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge4.data"
-	.include "sprites/Sprites_Scenes/cenario_aberto/river_mid.data"
-	.include "sprites/Sprites_Scenes/cenario_aberto/road_edge.data"
-	.include "sprites/Sprites_Scenes/cenario_aberto/road_mid.data"
-	.include "sprites/Sprites_Scenes/cenario_aberto/road_side.data"
-	.include "sprites/Sprites_Scenes/cenario_aberto/sprite_brush.data"
+	.include "sprites/Sprites_Scenes/cenario_aberto/rass.data"						# 16	
+	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge1.data"				# 17
+	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge2.data"				# 18
+	.include "sprites/Sprites_Scenes/cenario_aberto/river_mid.data"					# 19
+	.include "sprites/Sprites_Scenes/cenario_aberto/river_new_side1.data"			# 20
+	.include "sprites/Sprites_Scenes/cenario_aberto/river_new_side2.data"			# 21
+	.include "sprites/Sprites_Scenes/cenario_aberto/road_edge.data"					# 22
+	.include "sprites/Sprites_Scenes/cenario_aberto/road_edge1.data"				# 23
+	.include "sprites/Sprites_Scenes/cenario_aberto/road_edge2.data"				# 24
+	.include "sprites/Sprites_Scenes/cenario_aberto/road_edge3.data"				# 25
+	.include "sprites/Sprites_Scenes/cenario_aberto/road_edge4.data"				# 26
+	.include "sprites/Sprites_Scenes/cenario_aberto/road_mid.data"					# 27
+	.include "sprites/Sprites_Scenes/cenario_aberto/roadside_bottom.data"			# 28
+	.include "sprites/Sprites_Scenes/cenario_aberto/roadside_left.data"				# 29
+	.include "sprites/Sprites_Scenes/cenario_aberto/roadside_right.data"			# 30
+	.include "sprites/Sprites_Scenes/cenario_aberto/roadside_to.data"				# 31
+	.include "sprites/Sprites_Scenes/cenario_aberto/sprite_brush.data"				# 32
 
 	# Gym_Scenario
-	.include "sprites/Sprites_Scenes/cenario_ginasio/colunabot.data"
-	.include "sprites/Sprites_Scenes/cenario_ginasio/colunato.data"
-	.include "sprites/Sprites_Scenes/cenario_ginasio/door.data"
-	.include "sprites/Sprites_Scenes/cenario_ginasio/floor.data"
-	.include "sprites/Sprites_Scenes/cenario_ginasio/statue_bot.data"
-	.include "sprites/Sprites_Scenes/cenario_ginasio/statue_to.data"
-	.include "sprites/Sprites_Scenes/cenario_ginasio/windows1.data"
-	.include "sprites/Sprites_Scenes/cenario_ginasio/windows2.data"
+	.include "sprites/Sprites_Scenes/cenario_ginasio/colunabot.data"				# 33
+	.include "sprites/Sprites_Scenes/cenario_ginasio/colunato.data"					# 34
+	.include "sprites/Sprites_Scenes/cenario_ginasio/door.data"						# 35
+	.include "sprites/Sprites_Scenes/cenario_ginasio/floor.data"					# 36
+	.include "sprites/Sprites_Scenes/cenario_ginasio/statue_bot.data"				# 37
+	.include "sprites/Sprites_Scenes/cenario_ginasio/statue_to.data"				# 38
+	.include "sprites/Sprites_Scenes/cenario_ginasio/windows1.data"					# 39
+	.include "sprites/Sprites_Scenes/cenario_ginasio/windows2.data"					# 40
 
 	# Player 
-	.include "sprites/player_1.s"
+	.include "sprites/Sprites_Scenes/personagens/trainer/layer_back.data"			# 100
+	.include "sprites/Sprites_Scenes/personagens/trainer/layer_front.data"			# 101
+	.include "sprites/Sprites_Scenes/personagens/trainer/layer_left.data"			# 102
+	.include "sprites/Sprites_Scenes/personagens/trainer/layer_right.data"			# 103
+	.include "sprites/Sprites_Scenes/personagens/trainer/layer_walk_a1.data"		# 104
+	.include "sprites/Sprites_Scenes/personagens/trainer/layer_walk_a2.data"		# 105
+	.include "sprites/Sprites_Scenes/personagens/trainer/layer_walk_d1.data"		# 106
+	.include "sprites/Sprites_Scenes/personagens/trainer/layer_walk_d2.data"		# 107
+	.include "sprites/Sprites_Scenes/personagens/trainer/layer_walk_w1.data"		# 108
+	.include "sprites/Sprites_Scenes/personagens/trainer/layer_walk_w2.data"		# 109
 	
 	# Scenes	
 	.include "scenes/scene01.s"
@@ -48,8 +64,8 @@
 
 .text
 MAIN:
-	li s0, 3					# Player row
-	li s1, 2					# Player col
+	li s0, 12					# Player row
+	li s1, 9					# Player col
 	la s2, MAP_1				# Current Map
 	la s3, OBJECT_MAP_1			# Current Object Mapping
 	la s4, LOCATION_CHANGE_1	# Location to change
@@ -63,7 +79,7 @@ GAME_SETTING:
 	
 	mv a0, s0			# Lines to moves
 	mv a1, s1			# Rows to move
-	li a2, 13			# Player Image
+	li a2, 101			# Player Image
 	li a3, 0			# Player between image
 	li a4, 0
 	jal BLOCK_SELECTION
@@ -115,8 +131,8 @@ GAME_KEYBOARD:
 PRESS_MOVE_W:
 	li a0, -1
 	li a1, 0
-	li a2, 13
-	li a3, 13
+	li a2, 100
+	li a3, 108
 	li a4, 0
 	li a5, 8
 	j MOVE_PLAYER
@@ -124,8 +140,8 @@ PRESS_MOVE_W:
 PRESS_MOVE_S:
 	li a0, 1
 	li a1, 0
-	li a2, 13
-	li a3, 13
+	li a2, 101
+	li a3, 101
 	li a4, 0
 	li a5, -8
 	j MOVE_PLAYER
@@ -133,8 +149,8 @@ PRESS_MOVE_S:
 PRESS_MOVE_A:
 	li a0, 0
 	li a1, -1
-	li a2, 13
-	li a3, 13
+	li a2, 102
+	li a3, 104
 	li a4, 0
 	li a5, 0
 	j MOVE_PLAYER
@@ -142,8 +158,8 @@ PRESS_MOVE_A:
 PRESS_MOVE_D:
 	li a0, 0
 	li a1, 1
-	li a2, 13
-	li a3, 13
+	li a2, 103
+	li a3, 106
 	li a4, 0
 	li a5, 0
 	j MOVE_PLAYER
@@ -440,86 +456,146 @@ END_PRINT_MAP:
 # a0 => Block Line, a1 => Block Col, a2 => Type of Block, a3 => Offset_x, a4 => Offset_y
 BLOCK_SELECTION:
 	# Player
-	li t0, 13		
-	beq a2, t0, PLAYER_BLOCK	
+	li t0, 100		
+	beq a2, t0, PLAYER_BACK
+	li t0, 101		
+	beq a2, t0, PLAYER_FRONT
+	li t0, 102		
+	beq a2, t0, PLAYER_LEFT
+	li t0, 103		
+	beq a2, t0, PLAYER_RIGHT
+	li t0, 104		
+	beq a2, t0, PLAYER_WALK_A1
+	li t0, 105		
+	beq a2, t0, PLAYER_WALK_A2
+	li t0, 106		
+	beq a2, t0, PLAYER_WALK_D1
+	li t0, 107		
+	beq a2, t0, PLAYER_WALK_D2
+	li t0, 108		
+	beq a2, t0, PLAYER_WALK_W1
+	li t0, 109		
+	beq a2, t0, PLAYER_WALK_W2
 
 	# Lab_Scenario
-	li t0, 1		
-	beq a2, t0, LAB_ESTANTE_BOT1	
-	li t0, 2		
-	beq a2, t0, LAB_ESTANTE_BOT2	
-	li t0, 3
-	beq a2, t0, LAB_ESTANTE_TOP1	
-	li t0, 4
-	beq a2, t0, LAB_ESTANTE_TOP2	
-	li t0, 5
-	beq a2, t0, LAB_FLOOR	
-	li t0, 6
-	beq a2, t0, LAB_TABLE10	
-	li t0, 7
-	beq a2, t0, LAB_TABLE11	
-	li t0, 8
-	beq a2, t0, LAB_TABLE20	
-	li t0, 9
-	beq a2, t0, LAB_TABLE21	
-	li t0, 10
-	beq a2, t0, LAB_TABLE22	
-	li t0, 11
-	beq a2, t0, LAB_WALL_BOTTOM	
-	li t0, 12
-	beq a2, t0, LAB_WALL_TOP
-	li t0, 32
+	li t0, 1
 	beq a2, t0, LAB_DOOR1
-	li t0, 33
+	li t0, 2
 	beq a2, t0, LAB_DOOR2
-	li t0, 34
+	li t0, 3		
+	beq a2, t0, LAB_ESTANTE_BOT1	
+	li t0, 4		
+	beq a2, t0, LAB_ESTANTE_BOT2	
+	li t0, 5
+	beq a2, t0, LAB_ESTANTE_TOP1	
+	li t0, 6
+	beq a2, t0, LAB_ESTANTE_TOP2	
+	li t0, 7
+	beq a2, t0, LAB_FLOOR	
+	li t0, 8
+	beq a2, t0, LAB_TABLE10	
+	li t0, 9
+	beq a2, t0, LAB_TABLE11	
+	li t0, 10
+	beq a2, t0, LAB_TABLE20	
+	li t0, 11
+	beq a2, t0, LAB_TABLE21	
+	li t0, 12
+	beq a2, t0, LAB_TABLE22	
+	li t0, 13
+	beq a2, t0, LAB_WALL_BOTTOM	
+	li t0, 14
+	beq a2, t0, LAB_WALL_TOP
+	li t0, 15
 	beq a2, t0, LAB_WINDOWS_NEW
 
 	# Wild_Scenario
-	li t0, 14
-	beq a2, t0, WILD_CUT_GRASS
-	li t0, 15
-	beq a2, t0, WILD_RIVER_EDGE1
 	li t0, 16
-	beq a2, t0, WILD_RIVER_EDGE2
+	beq a2, t0, WILD_CUT_GRASS
 	li t0, 17
-	beq a2, t0, WILD_RIVER_EDGE3
+	beq a2, t0, WILD_RIVER_EDGE1
 	li t0, 18
-	beq a2, t0, WILD_RIVER_EDGE4
+	beq a2, t0, WILD_RIVER_EDGE2
 	li t0, 19
 	beq a2, t0, WILD_RIVER_MID
 	li t0, 20
-	beq a2, t0, WILD_ROAD_EDGE
+	beq a2, t0, WILD_RIVER_NEW_SIDE1
 	li t0, 21
-	beq a2, t0, WILD_ROAD_MID
+	beq a2, t0, WILD_RIVER_NEW_SIDE2
 	li t0, 22
-	beq a2, t0, WILD_ROAD_SIDE
+	beq a2, t0, WILD_ROAD_EDGE
 	li t0, 23
+	beq a2, t0, WILD_ROAD_EDGE1
+	li t0, 24
+	beq a2, t0, WILD_ROAD_EDGE2
+	li t0, 25
+	beq a2, t0, WILD_ROAD_EDGE3
+	li t0, 26
+	beq a2, t0, WILD_ROAD_EDGE4
+	li t0, 27
+	beq a2, t0, WILD_ROAD_MID
+	li t0, 28
+	beq a2, t0, WILD_ROADSIDE_BOTTOM
+	li t0, 29
+	beq a2, t0, WILD_ROADSIDE_LEFT
+	li t0, 30
+	beq a2, t0, WILD_ROADSIDE_RIGHT
+	li t0, 31
+	beq a2, t0, WILD_ROADSIDE_TO
+	li t0, 32
 	beq a2, t0, WILD_BRUSH
 
 	# Gym_Scenario
-	li t0, 24
+	li t0, 33
 	beq a2, t0, GYM_COLUNABOT
-	li t0, 25
+	li t0, 34
 	beq a2, t0, GYM_COLUNATO
-	li t0, 26
+	li t0, 35
 	beq a2, t0, GYM_DOOR
-	li t0, 27
+	li t0, 36
 	beq a2, t0, GYM_FLOOR	
-	li t0, 28
+	li t0, 37
 	beq a2, t0, GYM_STATUE_BOT
-	li t0, 29
+	li t0, 38
 	beq a2, t0, GYM_STATUE_TO
-	li t0, 30
+	li t0, 39
 	beq a2, t0, GYM_WINDOWS1
-	li t0, 31
+	li t0, 40
 	beq a2, t0, GYM_WINDOWS2		
 
 	ret
 # Player
-PLAYER_BLOCK:
-	la a2, player_1
+PLAYER_BACK:
+	la a2, layer_back
 	j PRINT_BLOCK_SELECTED
+PLAYER_FRONT:
+	la a2, layer_front
+	j PRINT_BLOCK_SELECTED
+PLAYER_LEFT:
+	la a2, layer_left
+	j PRINT_BLOCK_SELECTED
+PLAYER_RIGHT:
+	la a2, layer_right
+	j PRINT_BLOCK_SELECTED
+PLAYER_WALK_A1:
+	la a2, layer_walk_a1
+	j PRINT_BLOCK_SELECTED
+PLAYER_WALK_A2:
+	la a2, layer_walk_a2
+	j PRINT_BLOCK_SELECTED
+PLAYER_WALK_D1:
+	la a2, layer_walk_d1
+	j PRINT_BLOCK_SELECTED
+PLAYER_WALK_D2:
+	la a2, layer_walk_d2
+	j PRINT_BLOCK_SELECTED
+PLAYER_WALK_W1:
+	la a2, layer_walk_w1
+	j PRINT_BLOCK_SELECTED
+PLAYER_WALK_W2:
+	la a2, layer_walk_w2
+	j PRINT_BLOCK_SELECTED
+
 # Lab_Scenario
 LAB_DOOR1:
 	la a2, door1_lab
@@ -577,23 +653,44 @@ WILD_RIVER_EDGE1:
 WILD_RIVER_EDGE2:
 	la a2, river_edge2
 	j PRINT_BLOCK_SELECTED
-WILD_RIVER_EDGE3:
-	la a2, river_edge3
-	j PRINT_BLOCK_SELECTED
-WILD_RIVER_EDGE4:
-	la a2, river_edge4
-	j PRINT_BLOCK_SELECTED
 WILD_RIVER_MID:
 	la a2, river_mid
+	j PRINT_BLOCK_SELECTED
+WILD_RIVER_NEW_SIDE1:
+	la a2, river_new_side1
+	j PRINT_BLOCK_SELECTED
+WILD_RIVER_NEW_SIDE2:
+	la a2, river_new_side2
 	j PRINT_BLOCK_SELECTED
 WILD_ROAD_EDGE:
 	la a2, road_edge
 	j PRINT_BLOCK_SELECTED
+WILD_ROAD_EDGE1:
+	la a2, road_edge1
+	j PRINT_BLOCK_SELECTED
+WILD_ROAD_EDGE2:
+	la a2, road_edge2
+	j PRINT_BLOCK_SELECTED
+WILD_ROAD_EDGE3:
+	la a2, road_edge3
+	j PRINT_BLOCK_SELECTED
+WILD_ROAD_EDGE4:
+	la a2, road_edge4
+	j PRINT_BLOCK_SELECTED
 WILD_ROAD_MID:
 	la a2, road_mid
 	j PRINT_BLOCK_SELECTED
-WILD_ROAD_SIDE:
-	la a2, road_side
+WILD_ROADSIDE_BOTTOM:
+	la a2, roadside_bottom
+	j PRINT_BLOCK_SELECTED
+WILD_ROADSIDE_LEFT:
+	la a2, roadside_left
+	j PRINT_BLOCK_SELECTED
+WILD_ROADSIDE_RIGHT:
+	la a2, roadside_right
+	j PRINT_BLOCK_SELECTED
+WILD_ROADSIDE_TO:
+	la a2, roadside_to
 	j PRINT_BLOCK_SELECTED
 WILD_BRUSH:
 	la a2, sprite_brush
