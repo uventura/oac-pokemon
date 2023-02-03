@@ -1,7 +1,7 @@
 |==|Cena de area fechada:
     |*| Laboratorio                                         |X| PRECISA DE AJUSTES
     |*| Casa                                                | |
-    |*| Ginasio                                             | |
+    |*| Ginasio                                             |X| PRECISA DE AJUSTES
     |*| Lugar para curar os pokemons e comprar items        | |
 
 |==|Cenas de area aberta:
