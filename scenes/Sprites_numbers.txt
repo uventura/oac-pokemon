@@ -1,16 +1,19 @@
 =====LABORATORIO======
-1-------estante_livro1
-2-------estante_livro2
-3-------estante_livro3
-4-------estante_livro4
+1-------estante_bot1
+2-------estante_bot2
+3-------estante_top1
+4-------estante_top2
 5-------floor_lab
 6-------sprite_table10
 7-------sprite_table11
 8-------sprite_table20
 9-------sprite_table21
-10------sprite_windows0
-11------sprite_windows1
-12------sprite_windows2
+10------sprite_table22
+11------wall_bottom_lab
+12------wall_top_lab
+32------door1
+33------door2
+34------windows_new_lab
 
 =====PLAYER=====
 13------player

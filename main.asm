@@ -1,17 +1,20 @@
 .data
 	# Lab_Scenario
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_livros1.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_livros2.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_livros3.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_livros4.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/door1.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/door2.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_bot1.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_bot2.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_top1.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_top2.data"
 	.include "sprites/Sprites_Scenes/cenario_laboratorio/floor_lab.data"
 	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table10.data"
 	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table11.data"
 	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table20.data"
 	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table21.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_windows0.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_windows1.data"
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_windows2.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/sprite_table22.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/wall_bottom_lab.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/wall_top_lab.data"
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/windows_new_lab.data"
 	
 	# Wild_Scenario
 	.include "sprites/Sprites_Scenes/cenario_aberto/rass.data"
@@ -442,13 +445,13 @@ BLOCK_SELECTION:
 
 	# Lab_Scenario
 	li t0, 1		
-	beq a2, t0, ESTANTE_L1	
+	beq a2, t0, LAB_ESTANTE_BOT1	
 	li t0, 2		
-	beq a2, t0, ESTANTE_L2	
+	beq a2, t0, LAB_ESTANTE_BOT2	
 	li t0, 3
-	beq a2, t0, ESTANTE_L3	
+	beq a2, t0, LAB_ESTANTE_TOP1	
 	li t0, 4
-	beq a2, t0, ESTANTE_L4	
+	beq a2, t0, LAB_ESTANTE_TOP2	
 	li t0, 5
 	beq a2, t0, LAB_FLOOR	
 	li t0, 6
@@ -460,11 +463,17 @@ BLOCK_SELECTION:
 	li t0, 9
 	beq a2, t0, LAB_TABLE21	
 	li t0, 10
-	beq a2, t0, LAB_WINDOW0	
+	beq a2, t0, LAB_TABLE22	
 	li t0, 11
-	beq a2, t0, LAB_WINDOW1	
+	beq a2, t0, LAB_WALL_BOTTOM	
 	li t0, 12
-	beq a2, t0, LAB_WINDOW2
+	beq a2, t0, LAB_WALL_TOP
+	li t0, 32
+	beq a2, t0, LAB_DOOR1
+	li t0, 33
+	beq a2, t0, LAB_DOOR2
+	li t0, 34
+	beq a2, t0, LAB_WINDOWS_NEW
 
 	# Wild_Scenario
 	li t0, 14
@@ -512,17 +521,23 @@ PLAYER_BLOCK:
 	la a2, player_1
 	j PRINT_BLOCK_SELECTED
 # Lab_Scenario
-ESTANTE_L1:
-	la a2, estante_livros1
+LAB_DOOR1:
+	la a2, door1_lab
 	j PRINT_BLOCK_SELECTED
-ESTANTE_L2:
-	la a2, estante_livros2
+LAB_DOOR2:
+	la a2, door2_lab
 	j PRINT_BLOCK_SELECTED
-ESTANTE_L3:	
-	la a2, estante_livros3
+LAB_ESTANTE_BOT1:
+	la a2, estante_bot1
 	j PRINT_BLOCK_SELECTED
-ESTANTE_L4:
-	la a2, estante_livros4
+LAB_ESTANTE_BOT2:
+	la a2, estante_bot2
+	j PRINT_BLOCK_SELECTED
+LAB_ESTANTE_TOP1:	
+	la a2, estante_top1
+	j PRINT_BLOCK_SELECTED
+LAB_ESTANTE_TOP2:
+	la a2, estante_top2
 	j PRINT_BLOCK_SELECTED
 LAB_FLOOR:
 	la a2, floor_lab
@@ -539,14 +554,17 @@ LAB_TABLE20:
 LAB_TABLE21:
 	la a2, sprite_table21
 	j PRINT_BLOCK_SELECTED
-LAB_WINDOW0:
-	la a2, sprite_windows0
+LAB_TABLE22:
+	la a2, sprite_table22
 	j PRINT_BLOCK_SELECTED
-LAB_WINDOW1:
-	la a2, sprite_windows1
+LAB_WALL_BOTTOM:
+	la a2, wall_bottom_lab
 	j PRINT_BLOCK_SELECTED
-LAB_WINDOW2:
-	la a2, sprite_windows2
+LAB_WALL_TOP:
+	la a2, wall_top_lab
+	j PRINT_BLOCK_SELECTED
+LAB_WINDOWS_NEW:
+	la a2, windows_new_lab
 	j PRINT_BLOCK_SELECTED
 
 # Wild_Scenario
