@@ -1,3 +1,4 @@
-sprites/**/*.png
-sprites/**/*.bin
-sprites/**/*.mif
+**/*.png
+**/*.bin
+**/*.mif
+**/*.mid
