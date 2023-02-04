@@ -301,13 +301,11 @@ MOVE_PLAYER:
 	beqz a0, END_PLAYER_MOVE	# Player Collides
 	
 	# Location Collision
-	lw a0, 4(sp)
-	add a0, a0, s0
-	
-	lw a1, 8(sp)
-	add a1, a1, s1
-	
-	mv a3, s4
+	lw a0, 4(sp)			# a0 = delta_row
+	add a0, a0, s0			# a0 = a0 + current_position = new_row_position
+	lw a1, 8(sp)			# a1 = delta_col
+	add a1, a1, s1			# a1 = new_col_position
+	mv a3, s4			# a3 = location_to_change
 	jal PLAYER_COLLISION
 	
 	beqz a0, MOVE_CHANGE_CURRENT_LOCATION
