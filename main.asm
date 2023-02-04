@@ -62,7 +62,9 @@
 	.include "scenes/scene02.s"
 	.include "scenes/scene03.s"
 
-	
+	# Audio
+	.include "audio/oak-s-lab.data"
+
 	MUSIC_SIZE: .word 13
 	# lista de nota,duracao,nota,duracaoo,nota,duracao,...
 	MUSIC_PLAYING: 69,500,76,500,74,500,76,500,79,600, 76,1000,0,1200,69,500,76,500,74,500,76,500,81,600,76,1000
@@ -74,10 +76,11 @@ MAIN:
 	la s3, OBJECT_MAP_1			# Current Object Mapping
 	la s4, LOCATION_CHANGE_1	# Location to change
 
-	la s5, MUSIC_SIZE		# Music Size
-	lw s5, 0(s5)
+	la t0, oak_s_lab_track1		# Music Size
+	lw s5, 0(t0)
 
-	la s6, MUSIC_PLAYING		# Music Playing
+	addi t0, t0, 4
+	mv s6, t0		# Music Playing
 	li s7, 0			# Music Step
 	li s8, 0			# Elapsed Time
 	
