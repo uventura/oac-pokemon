@@ -13,7 +13,10 @@
 	# Scenes	
 	.include "scenes/scene01.s"
 	.include "scenes/scene02.s"
-
+	
+	MUSIC_SIZE: .word 13
+	# lista de nota,duracao,nota,duracaoo,nota,duracao,...
+	MUSIC_PLAYING: 69,500,76,500,74,500,76,500,79,600, 76,1000,0,1200,69,500,76,500,74,500,76,500,81,600,76,1000
 .text
 MAIN:
 	li s0, 3			# Player row
@@ -21,6 +24,13 @@ MAIN:
 	la s2, MAP_1			# Current Map
 	la s3, OBJECT_MAP_1		# Current Object Mapping
 	la s4, LOCATION_CHANGE_1	# Location to change
+
+	la s5, MUSIC_SIZE		# Music Size
+	lw s5, 0(s5)
+
+	la s6, MUSIC_PLAYING		# Music Playing
+	li s7, 0			# Music Step
+	li s8, 0			# Elapsed Time
 	
 GAME_SETTING: 
 	mv a0, s2 
@@ -37,7 +47,21 @@ GAME_SETTING:
 	jal BLOCK_SELECTION
 	
 GAME_LOOP:
-	# Keyboard Event
+	li a7, 30
+	ecall
+
+	# Audio Event
+	sub t0, a0, s8
+	add t1, s6, s7
+	lw t1, 4(t1)
+	ble t0, t1, KEYBOARD_EVENT
+	
+	jal AUDIO_GAME
+	li a7, 30
+	ecall
+	
+	mv s8, a0
+KEYBOARD_EVENT:
 	li t0, 0xFF200000
 	lw t1, 0(t0)
 	andi t1, t1, 0x00000001
@@ -56,6 +80,33 @@ EXIT:
 ############################################################################
 ############################################################################
 
+AUDIO_GAME: # Uses the saved registers
+	# |Note|Duration|Note|Duration|... => (|Note|Duration|)(|Note|Duration|)... => 0, 8, 16, 24, ...
+	# When you are working with a note you use a step size with 8 as size.	
+
+	li t0, -1
+	beq s7, t0, RESET_AUDIO
+
+	slli t0, s5, 3			# s6 << 3 = (audio_size) * 8
+	bge s7, t0, RESET_AUDIO		# s7 >= (audio_size) * 8
+	
+	add t0, s6, s7			# s6 + s7 = Current_Audio + Current_Step => Current Note
+
+	lw a0, 0(t0)			# Load Note
+	lw a1, 4(t0)			# Load Duration
+
+	li a2, 68			# Instrument
+	li a3, 127			# Volume
+
+	li a7, 31			# Play note
+	ecall
+
+	addi s7, s7, 8			# Next Note
+
+	ret
+RESET_AUDIO:
+	li s7, 0
+	ret
 #=========================+
 #	GAME KEYBOARD	  |
 #=========================+
@@ -183,19 +234,12 @@ MOVE_PLAYER:
 	sw a4, 20(sp)
 	sw a5, 24(sp)
 	
+	# Object Collision
 	add a0, a0, s0			# New Row Player Position
 	add a1, a1, s1			# New Col Player Position
-	
-	bltz a0, END_PLAYER_MOVE
-	bltz a1, END_PLAYER_MOVE
-	li t0, 15
-	bgt a0, t0, END_PLAYER_MOVE
-	li t0, 20
-	bgt a1, t0, END_PLAYER_MOVE
-	
-	# Object Collision
 	mv a3, s3			# Current Scene Objects
 	jal PLAYER_COLLISION
+
 	beqz a0, END_PLAYER_MOVE	# Player Collides
 	
 	# Location Collision
