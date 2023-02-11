@@ -1,6 +1,8 @@
 .data
 	# Pokemon Choose Scenario
+	.include "scenes/display_pokemon.s"
 	.include "sprites/brick.s"								# 112
+	.include "sprites/pokemons/bubasauro.s"
 	
 	# Lab_Scenario
 	.include "sprites/Sprites_Scenes/cenario_laboratorio/door1.data"			# 1
@@ -80,6 +82,9 @@
 	PREVIOUS_POKEBALL: .byte 13
 
 .text
+FIRST_SETUP:
+	li s9, 0			# Current Pokemon
+
 MAIN:
 	li s0, 12			# Player row
 	li s1, 9			# Player col
@@ -96,7 +101,7 @@ MAIN:
 	li s7, 0			# Music Step
 	li s8, 0			# Elapsed Time
 	
-GAME_SETTING: 
+GAME_SETTING:
 	mv a0, s2 
 	jal PRINT_MAP
 	
@@ -212,7 +217,7 @@ AUDIO_GAME: # Uses the saved registers
 	lw a1, 4(t0)			# Load Duration
 
 	li a2, 68			# Instrument
-	li a3, 0			# Volume
+	li a3, 120			# Volume
 
 	li a7, 31			# Play note
 	ecall
@@ -260,6 +265,9 @@ GAME_KEYBOARD:
 	li t1, 'l'
 	beq t0, t1, SELECT_THIRD_POKEBALL
 	
+	li t1, 'i'
+	beq t0, t1, SELECTED_POKEMON
+
 	j END_GAME_KEYBOARD
 	
 PRESS_MOVE_W:
@@ -307,6 +315,8 @@ SELECT_SECOND_POKEBALL:
 SELECT_THIRD_POKEBALL:
 	li a0, 15
 	j SELECT_POKEBALL
+SELECTED_POKEMON:
+	j DISPLAY_SELECTED_POKEMON
 
 PRESS_RIGHT_POKEBALL:
 	ret
@@ -547,6 +557,49 @@ CHANGE_POKEBALL_STATE:
 	lw ra, 0(sp)
 	addi sp, sp, 8
 	j END_GAME_KEYBOARD
+	
+#====================================+
+#	DISPLAY SELECTED POKEMON     |
+#====================================+
+DISPLAY_SELECTED_POKEMON:
+	addi sp, sp, -4
+	sw ra, 0(sp)
+
+	bnez s9, RESTART_LAB_SCENE
+	
+	la s9, PREVIOUS_POKEBALL
+	lb s9, 0(s9)
+	addi s9, s9, -12
+
+	la a0, DISPLAY_POKEMON_SCENE
+	jal PRINT_MAP
+	
+	li t0, 1
+	beq s9, t0, DISPLAY_BUBASSAURO
+	li t0, 2
+	beq s9, t0, DISPLAY_CHARMANDER
+	li t0, 3
+	beq s9, t0, DISPLAY_SQUIRTLE
+
+DISPLAY_BUBASSAURO:
+	la a0, bubasauro
+	j DISPLAY_POKEMON_IMAGE
+DISPLAY_CHARMANDER:
+	la a0, bubasauro
+	j DISPLAY_POKEMON_IMAGE
+DISPLAY_SQUIRTLE:
+	la a0, bubasauro
+DISPLAY_POKEMON_IMAGE:
+	li a1, 30
+	li a2, 30
+	li a3, 0XFF000000
+	jal PRINT_SINGLE_IMAGE
+	
+	lw ra, 0(sp)
+	addi sp, sp, 4
+	ret
+RESTART_LAB_SCENE:
+	j MAIN
 
 #==============================+
 #	OBJECT RENDERING       |
