@@ -1,7 +1,10 @@
 .data
+	# Pokemon Choose Scenario
+	.include "sprites/brick.s"								# 112
+	
 	# Lab_Scenario
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/door1.data"				# 1
-	.include "sprites/Sprites_Scenes/cenario_laboratorio/door2.data"				# 2
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/door1.data"			# 1
+	.include "sprites/Sprites_Scenes/cenario_laboratorio/door2.data"			# 2
 	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_bot1.data"			# 3
 	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_bot2.data"			# 4
 	.include "sprites/Sprites_Scenes/cenario_laboratorio/estante_top1.data"			# 5
@@ -15,35 +18,43 @@
 	.include "sprites/Sprites_Scenes/cenario_laboratorio/wall_bottom_lab.data"		# 13
 	.include "sprites/Sprites_Scenes/cenario_laboratorio/wall_top_lab.data"			# 14
 	.include "sprites/Sprites_Scenes/cenario_laboratorio/windows_new_lab.data"		# 15
+
+	.include "sprites/pokeball.s"								# 110 			
+	.include "sprites/pokeball_open.s"							# 111
+	.include "sprites/select_zone.s"							# 113
+	
+	.include "sprites/table_lab01.s"							# 114
+	.include "sprites/table_lab02.s"							# 115
+	.include "sprites/table_lab03.s"							# 116
 	
 	# Wild_Scenario
-	.include "sprites/Sprites_Scenes/cenario_aberto/rass.data"						# 16	
-	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge1.data"				# 17
-	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge2.data"				# 18
-	.include "sprites/Sprites_Scenes/cenario_aberto/river_mid.data"					# 19
+	.include "sprites/Sprites_Scenes/cenario_aberto/rass.data"				# 16	
+	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge1.data"			# 17
+	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge2.data"			# 18
+	.include "sprites/Sprites_Scenes/cenario_aberto/river_mid.data"				# 19
 	.include "sprites/Sprites_Scenes/cenario_aberto/river_new_side1.data"			# 20
 	.include "sprites/Sprites_Scenes/cenario_aberto/river_new_side2.data"			# 21
-	.include "sprites/Sprites_Scenes/cenario_aberto/road_edge.data"					# 22
-	.include "sprites/Sprites_Scenes/cenario_aberto/road_edge1.data"				# 23
-	.include "sprites/Sprites_Scenes/cenario_aberto/road_edge2.data"				# 24
-	.include "sprites/Sprites_Scenes/cenario_aberto/road_edge3.data"				# 25
-	.include "sprites/Sprites_Scenes/cenario_aberto/road_edge4.data"				# 26
-	.include "sprites/Sprites_Scenes/cenario_aberto/road_mid.data"					# 27
+	.include "sprites/Sprites_Scenes/cenario_aberto/road_edge.data"				# 22
+	.include "sprites/Sprites_Scenes/cenario_aberto/road_edge1.data"			# 23
+	.include "sprites/Sprites_Scenes/cenario_aberto/road_edge2.data"			# 24
+	.include "sprites/Sprites_Scenes/cenario_aberto/road_edge3.data"			# 25
+	.include "sprites/Sprites_Scenes/cenario_aberto/road_edge4.data"			# 26
+	.include "sprites/Sprites_Scenes/cenario_aberto/road_mid.data"				# 27
 	.include "sprites/Sprites_Scenes/cenario_aberto/roadside_bottom.data"			# 28
-	.include "sprites/Sprites_Scenes/cenario_aberto/roadside_left.data"				# 29
+	.include "sprites/Sprites_Scenes/cenario_aberto/roadside_left.data"			# 29
 	.include "sprites/Sprites_Scenes/cenario_aberto/roadside_right.data"			# 30
-	.include "sprites/Sprites_Scenes/cenario_aberto/roadside_to.data"				# 31
-	.include "sprites/Sprites_Scenes/cenario_aberto/sprite_brush.data"				# 32
+	.include "sprites/Sprites_Scenes/cenario_aberto/roadside_to.data"			# 31
+	.include "sprites/Sprites_Scenes/cenario_aberto/sprite_brush.data"			# 32
 
 	# Gym_Scenario
-	.include "sprites/Sprites_Scenes/cenario_ginasio/colunabot.data"				# 33
-	.include "sprites/Sprites_Scenes/cenario_ginasio/colunato.data"					# 34
-	.include "sprites/Sprites_Scenes/cenario_ginasio/door.data"						# 35
-	.include "sprites/Sprites_Scenes/cenario_ginasio/floor.data"					# 36
-	.include "sprites/Sprites_Scenes/cenario_ginasio/statue_bot.data"				# 37
-	.include "sprites/Sprites_Scenes/cenario_ginasio/statue_to.data"				# 38
-	.include "sprites/Sprites_Scenes/cenario_ginasio/windows1.data"					# 39
-	.include "sprites/Sprites_Scenes/cenario_ginasio/windows2.data"					# 40
+	.include "sprites/Sprites_Scenes/cenario_ginasio/colunabot.data"			# 33
+	.include "sprites/Sprites_Scenes/cenario_ginasio/colunato.data"				# 34
+	.include "sprites/Sprites_Scenes/cenario_ginasio/door.data"				# 35
+	.include "sprites/Sprites_Scenes/cenario_ginasio/floor.data"				# 36
+	.include "sprites/Sprites_Scenes/cenario_ginasio/statue_bot.data"			# 37
+	.include "sprites/Sprites_Scenes/cenario_ginasio/statue_to.data"			# 38
+	.include "sprites/Sprites_Scenes/cenario_ginasio/windows1.data"				# 39
+	.include "sprites/Sprites_Scenes/cenario_ginasio/windows2.data"				# 40
 
 	# Player 
 	.include "sprites/Sprites_Scenes/personagens/trainer/layer_back.data"			# 100
@@ -65,6 +76,9 @@
 	# Audio
 	.include "audio/oak-s-lab.data"
 	
+	# Game Status => Saves Which Pokeball Was Selected
+	PREVIOUS_POKEBALL: .byte 13
+
 .text
 MAIN:
 	li s0, 12			# Player row
@@ -198,7 +212,7 @@ AUDIO_GAME: # Uses the saved registers
 	lw a1, 4(t0)			# Load Duration
 
 	li a2, 68			# Instrument
-	li a3, 127			# Volume
+	li a3, 0			# Volume
 
 	li a7, 31			# Play note
 	ecall
@@ -230,6 +244,21 @@ GAME_KEYBOARD:
 	
 	li t1, 'e'
 	beq t0, t1, PRESS_EXIT
+	
+	# Verify if is in right position to select pokemon
+	li t1, 6
+	bne s0, t1, END_GAME_KEYBOARD
+	li t1, 14
+	bne s1, t1, END_GAME_KEYBOARD
+	
+	li t1, 'j'
+	beq t0, t1, SELECT_FIRST_POKEBALL
+	
+	li t1, 'k'
+	beq t0, t1, SELECT_SECOND_POKEBALL
+	
+	li t1, 'l'
+	beq t0, t1, SELECT_THIRD_POKEBALL
 	
 	j END_GAME_KEYBOARD
 	
@@ -268,9 +297,23 @@ PRESS_MOVE_D:
 	li a4, 0
 	li a5, 0
 	j MOVE_PLAYER
+	
+SELECT_FIRST_POKEBALL:
+	li a0, 13
+	j SELECT_POKEBALL
+SELECT_SECOND_POKEBALL:
+	li a0, 14
+	j SELECT_POKEBALL
+SELECT_THIRD_POKEBALL:
+	li a0, 15
+	j SELECT_POKEBALL
+
+PRESS_RIGHT_POKEBALL:
+	ret
 
 PRESS_EXIT:
 	j EXIT
+
 END_GAME_KEYBOARD:
 	ret
 
@@ -470,6 +513,41 @@ PLAYER_NOT_COLLIDES:
 	addi sp, sp, 4
 	ret
 
+#============================+
+#	SELECT POKEBALL	     |
+#============================+
+SELECT_POKEBALL: # SELECT POKEBALL
+	# a0 => Current Col
+	
+	addi sp, sp, -8
+	sw ra, 0(sp)
+	sb a0, 4(sp)
+	
+	la a1, PREVIOUS_POKEBALL
+	lb a1, 0(a1)
+
+CHANGE_POKEBALL_STATE:
+	li a0, 5
+	li a2, 110
+	li a3, 0
+	li a4, -4
+	jal BLOCK_SELECTION
+	
+	li a0, 5
+	lw a1, 4(sp)
+	li a2, 111
+	li a3, 0
+	li a4, -4
+	jal BLOCK_SELECTION
+	
+	la t0, PREVIOUS_POKEBALL
+	lb t1, 4(sp)	
+	sb t1, 0(t0)
+	
+	lw ra, 0(sp)
+	addi sp, sp, 8
+	j END_GAME_KEYBOARD
+
 #==============================+
 #	OBJECT RENDERING       |
 #==============================+
@@ -577,7 +655,11 @@ BLOCK_SELECTION:
 	beq a2, t0, PLAYER_WALK_W1
 	li t0, 109		
 	beq a2, t0, PLAYER_WALK_W2
-
+	
+	# Pokemon Choose Scenario
+	li t0, 112		
+	beq a2, t0, BRICK
+	
 	# Lab_Scenario
 	li t0, 1
 	beq a2, t0, LAB_DOOR1
@@ -609,6 +691,19 @@ BLOCK_SELECTION:
 	beq a2, t0, LAB_WALL_TOP
 	li t0, 15
 	beq a2, t0, LAB_WINDOWS_NEW
+	
+	li t0, 110
+	beq a2, t0, POKEBALL
+	li t0, 111
+	beq a2, t0, POKEBALL_OPEN
+	li t0, 113
+	beq a2, t0, SELECT_ZONE
+	li t0, 114
+	beq a2, t0, TABLE_LAB01
+	li t0, 115
+	beq a2, t0, TABLE_LAB02
+	li t0, 116
+	beq a2, t0, TABLE_LAB03
 
 	# Wild_Scenario
 	li t0, 16
@@ -697,6 +792,11 @@ PLAYER_WALK_W2:
 	la a2, layer_walk_w2
 	j PRINT_BLOCK_SELECTED
 
+# Pokemon Choose
+BRICK:
+	la a2, brick
+	j PRINT_BLOCK_SELECTED
+
 # Lab_Scenario
 LAB_DOOR1:
 	la a2, door1_lab
@@ -742,6 +842,24 @@ LAB_WALL_TOP:
 	j PRINT_BLOCK_SELECTED
 LAB_WINDOWS_NEW:
 	la a2, windows_new_lab
+	j PRINT_BLOCK_SELECTED
+POKEBALL:
+	la a2, pokeball
+	j PRINT_BLOCK_SELECTED
+POKEBALL_OPEN:
+	la a2, pokeball_open
+	j PRINT_BLOCK_SELECTED
+SELECT_ZONE:
+	la a2, select_zone
+	j PRINT_BLOCK_SELECTED
+TABLE_LAB01:
+	la a2, table_lab01
+	j PRINT_BLOCK_SELECTED
+TABLE_LAB02:
+	la a2, table_lab02
+	j PRINT_BLOCK_SELECTED
+TABLE_LAB03:
+	la a2, table_lab03
 	j PRINT_BLOCK_SELECTED
 
 # Wild_Scenario

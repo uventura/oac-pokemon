@@ -6,8 +6,8 @@ MAP_1:
 	8,9,8,9,8,9,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
 	10,11,10,11,10,11,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
 	7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-	7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
-	7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+	7,7,7,7,7,7,7,7,7,7,7,7,7,115,116,114,7,7,7,7,
+	7,7,7,7,7,7,7,7,7,7,7,7,7,7,113,7,7,7,7,7,
 	7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
 	5,6,5,6,5,6,7,7,7,7,7,7,7,7,7,7,5,6,5,6,
 	3,4,3,4,3,4,7,7,7,7,7,7,7,7,7,7,3,4,3,4,
@@ -18,7 +18,7 @@ MAP_1:
 	7,7,7,7,7,7,7,7,7,1,2,7,7,7,7,7,7,7,7,7,
 	
 OBJECT_MAP_1:
-	.byte 52				# Amount of objects
+	.byte 55				# Amount of objects
 	# Estante direita 8
 	.byte 8, 16, 5, 0, 0		# Character Map => row, col, object, off_x, off_y
 	.byte 9, 16, 3, 0, 0		# Character Map => row, col, object, off_x, off_y
@@ -77,6 +77,10 @@ OBJECT_MAP_1:
 	.byte 0, 6, 15, 0, 8		# Character Map => row, col, object, off_x, off_y
 	.byte 0, 7, 15, 0, 8		# Character Map => row, col, object, off_x, off_y
 	.byte 0, 8, 15, 0, 8		# Character Map => row, col, object, off_x, off_y
+	# Pokeball ('J', 'K, 'L')
+	.byte 5, 13, 110, 0, -4		# Character Map => row, col, object, off_x, off_y
+	.byte 5, 14, 110, 0, -4		# Character Map => row, col, object, off_x, off_y
+	.byte 5, 15, 110, 0, -4		# Character Map => row, col, object, off_x, off_y
 
 LOCATION_CHANGE_1:
 	.byte 2							# Amount of locations
