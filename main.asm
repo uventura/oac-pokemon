@@ -2,7 +2,10 @@
 	# Pokemon Choose Scenario
 	.include "scenes/display_pokemon.s"
 	.include "sprites/brick.s"								# 112
-	.include "sprites/pokemons/bubasauro.s"
+	.include "sprites/pokemons/Charmander.data"
+	.include "sprites/pokemons/Squirtle.data"
+	.include "sprites/pokemons/Bulbassauro.data"
+	.include "sprites/pokemons/chat.data" #					
 	
 	# Lab_Scenario
 	.include "sprites/Sprites_Scenes/cenario_laboratorio/door1.data"			# 1
@@ -84,10 +87,13 @@
 .text
 FIRST_SETUP:
 	li s9, 0			# Current Pokemon
-
-MAIN:
 	li s0, 12			# Player row
 	li s1, 9			# Player col
+	mv a0, s0
+	mv a1, s1
+MAIN:
+	mv s0, a0			# Player row
+	mv s1, a1
 	la s2, MAP_1			# Current Map
 	la s3, OBJECT_MAP_1		# Current Object Mapping
 	la s4, LOCATION_CHANGE_1	# Location to change
@@ -582,13 +588,14 @@ DISPLAY_SELECTED_POKEMON:
 	beq s9, t0, DISPLAY_SQUIRTLE
 
 DISPLAY_BUBASSAURO:
-	la a0, bubasauro
+	la a0, Bulbassauro
 	j DISPLAY_POKEMON_IMAGE
 DISPLAY_CHARMANDER:
-	la a0, bubasauro
+	la a0, Charmander
 	j DISPLAY_POKEMON_IMAGE
 DISPLAY_SQUIRTLE:
-	la a0, bubasauro
+	la a0, Squirtle
+	j DISPLAY_POKEMON_IMAGE
 DISPLAY_POKEMON_IMAGE:
 	li a1, 30
 	li a2, 30
@@ -599,6 +606,8 @@ DISPLAY_POKEMON_IMAGE:
 	addi sp, sp, 4
 	ret
 RESTART_LAB_SCENE:
+	li a0, 6
+	li a1, 13
 	j MAIN
 
 #==============================+
