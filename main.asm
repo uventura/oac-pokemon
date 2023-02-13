@@ -173,14 +173,14 @@ PRINT_SINGLE_IMAGE:
 	li t4, 0				# Co1 counter
 	
 	# Starting address
-	mv t5, a2				# t5 = vertical_shift
-	slli t6, t5, 9				# t6 = t5 << 9
-	slli t5, t5, 6				# t5 = t5 << 6
-	add t5, t5, t6				# t5 += t6 		=> t5 = vertical_shift * 320
-	add t5, t5, a1				# t5 += 1 		=> horizontal_Shift
-	mv t6, a3				# t6 = a3 = selected_frame
-	add t5, t5, t6				# t5 += t6		=> Current Address
-	mv t6, t5				# t6 = t5 		=> Reference Pixel Addres
+	li t6, 320
+	mul t5, a2, t6
+	add t5, t5, a1
+	add t5, t5, a3
+	mv t6, t5
+	
+	addi a0, a0, 8
+
 
 LOOP_PRINT_IMAGE:
 	beq t3, t1, LOOP_END_PRINT_IMAGE	# [if t3 == t1 <> row_counter == height] => End_Print_Image
