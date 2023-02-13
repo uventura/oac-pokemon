@@ -33,7 +33,7 @@
 	.include "sprites/table_lab03.s"							# 116
 	
 	# Wild_Scenario
-	.include "sprites/Sprites_Scenes/cenario_aberto/rass.data"				# 16	
+	.include "sprites/Sprites_Scenes/cenario_aberto/rass.s"				# 16	
 	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge1.data"			# 17
 	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge2.data"			# 18
 	.include "sprites/Sprites_Scenes/cenario_aberto/river_mid.data"				# 19
@@ -50,6 +50,7 @@
 	.include "sprites/Sprites_Scenes/cenario_aberto/roadside_right.data"			# 30
 	.include "sprites/Sprites_Scenes/cenario_aberto/roadside_to.data"			# 31
 	.include "sprites/Sprites_Scenes/cenario_aberto/sprite_brush.data"			# 32
+	.include "sprites/Sprites_Scenes/cenario_aberto/river_top_side.data"		# 117
 
 	# Gym_Scenario
 	.include "sprites/Sprites_Scenes/cenario_ginasio/colunabot.data"			# 33
@@ -60,6 +61,7 @@
 	.include "sprites/Sprites_Scenes/cenario_ginasio/statue_to.data"			# 38
 	.include "sprites/Sprites_Scenes/cenario_ginasio/windows1.data"				# 39
 	.include "sprites/Sprites_Scenes/cenario_ginasio/windows2.data"				# 40
+	.include "sprites/Sprites_Scenes/cenario_ginasio/sand.data"				# 118
 
 	# Player 
 	.include "sprites/Sprites_Scenes/personagens/trainer/layer_back.data"			# 100
@@ -802,6 +804,8 @@ BLOCK_SELECTION:
 	beq a2, t0, WILD_ROADSIDE_TO
 	li t0, 32
 	beq a2, t0, WILD_BRUSH
+	li t0, 117
+	beq a2, t0, WILD_RIVER_TOP_SIDE
 
 	# Gym_Scenario
 	li t0, 33
@@ -820,6 +824,8 @@ BLOCK_SELECTION:
 	beq a2, t0, GYM_WINDOWS1
 	li t0, 40
 	beq a2, t0, GYM_WINDOWS2		
+	li t0, 118
+	beq a2, t0, GYM_SAND
 
 	ret
 # Player
@@ -976,6 +982,9 @@ WILD_ROADSIDE_TO:
 WILD_BRUSH:
 	la a2, sprite_brush
 	j PRINT_BLOCK_SELECTED
+WILD_RIVER_TOP_SIDE:
+	la a2, river_top_side
+	j PRINT_BLOCK_SELECTED
 
 # Gym_Scenario
 GYM_COLUNABOT:
@@ -1001,6 +1010,9 @@ GYM_WINDOWS1:
 	j PRINT_BLOCK_SELECTED	
 GYM_WINDOWS2:
 	la a2, windows2
+	j PRINT_BLOCK_SELECTED
+GYM_SAND:
+	la a2, sand
 	j PRINT_BLOCK_SELECTED
 
 PRINT_BLOCK_SELECTED:
