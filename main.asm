@@ -1,4 +1,4 @@
-.data
+.data	
 	# Pokemon Choose Scenario
 	.include "scenes/display_pokemon.s"
 	.include "sprites/brick.s"								# 112
@@ -83,9 +83,10 @@
 	# Audio
 	.include "audio/oak-s-lab.data"
 	
+	
 	# Game Status => Saves Which Pokeball Was Selected
 	PREVIOUS_POKEBALL: .byte 13
-
+	
 .text
 FIRST_SETUP:
 	li s9, 0			# Current Pokemon
@@ -124,8 +125,9 @@ GAME_SETTING:
 	jal BLOCK_SELECTION
 	
 GAME_LOOP:
-	li a7, 30
-	ecall
+	# li a7, 30
+	# ecall
+	csrr a0, time 		# Alternative way for syscalls time
 
 	# Audio Event
 	sub t0, a0, s8
@@ -134,9 +136,10 @@ GAME_LOOP:
 	ble t0, t1, KEYBOARD_EVENT
 	
 	jal AUDIO_GAME
-	li a7, 30
-	ecall
-	
+	# li a7, 30
+	# ecall
+	csrr a0, time		# Alternative way for syscalls time
+
 	mv s8, a0
 KEYBOARD_EVENT:
 	li t0, 0xFF200000
@@ -212,7 +215,7 @@ LOOP_END_PRINT_IMAGE:
 AUDIO_GAME: # Uses the saved registers
 	# |Note|Duration|Note|Duration|... => (|Note|Duration|)(|Note|Duration|)... => 0, 8, 16, 24, ...
 	# When you are working with a note you use a step size with 8 as size.	
-
+	# ebreak
 	li t0, -1
 	beq s7, t0, RESET_AUDIO
 
@@ -223,8 +226,7 @@ AUDIO_GAME: # Uses the saved registers
 
 	lw a0, 0(t0)			# Load Note
 	lw a1, 4(t0)			# Load Duration
-
-	li a2, 68			# Instrument
+	li a2, 28			# Instrument
 	li a3, 120			# Volume
 
 	li a7, 31			# Play note
@@ -344,9 +346,6 @@ CHANGE_CURRENT_LOCATION: # a0 => player_row, a1 => player_col, a2 => scene
 
 	mv a0, a2
 
-	li a7, 1
-	ecall
-
 	li t0, 1
 	beq t0, a0, SCENE_1
 	
@@ -450,8 +449,15 @@ MOVE_PLAYER:
 	jal BLOCK_SELECTION
 
 	li a0, 100			# Wait 100ms
-	li a7, 32			# Sleep Action
-	ecall				# Call Sleep
+	# li a7, 32			# Sleep Action
+	# ecall				# Call Sleep
+	# Alternative ways for SysCall Sleep
+SLEEP:
+	csrr t6, time
+	add a0, a0, t6
+SLEEP_LOOP:
+	csrr t6, time
+	blt t6, a0, SLEEP_LOOP
 
 	mv a0, s0			# Previous Player Row
 	mv a1, s1			# Previous Player Col
