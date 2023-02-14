@@ -1,11 +1,14 @@
-.data	
+.data
+	# beginning text
+	.include "sprites/texts/texto_inicio.data"
+	.include "scenes/black_screen.s"
 	# Pokemon Choose Scenario
 	.include "scenes/display_pokemon.s"
 	.include "sprites/brick.s"								# 112
 	.include "sprites/pokemons/Charmander.data"
 	.include "sprites/pokemons/Squirtle.data"
 	.include "sprites/pokemons/Bulbassauro.data"
-	.include "sprites/pokemons/chat.data" #					
+	.include "sprites/pokemons/chat.data" 					
 	
 	# Lab_Scenario
 	.include "sprites/Sprites_Scenes/cenario_laboratorio/door1.data"			# 1
@@ -31,7 +34,10 @@
 	.include "sprites/table_lab01.s"							# 114
 	.include "sprites/table_lab02.s"							# 115
 	.include "sprites/table_lab03.s"							# 116
-	
+
+	.include "scenes/lab_Tscreen.s"
+	.include "sprites/texts/texto_cena1.data"
+
 	# Wild_Scenario
 	.include "sprites/Sprites_Scenes/cenario_aberto/rass.s"				# 16	
 	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge1.data"			# 17
@@ -52,6 +58,9 @@
 	.include "sprites/Sprites_Scenes/cenario_aberto/sprite_brush.data"			# 32
 	.include "sprites/Sprites_Scenes/cenario_aberto/river_top_side.data"		# 117
 
+	.include "scenes/wild_Tscreen.s"
+	.include "sprites/texts/texto_cena2.data"
+
 	# Gym_Scenario
 	.include "sprites/Sprites_Scenes/cenario_ginasio/colunabot.data"			# 33
 	.include "sprites/Sprites_Scenes/cenario_ginasio/colunato.data"				# 34
@@ -62,6 +71,9 @@
 	.include "sprites/Sprites_Scenes/cenario_ginasio/windows1.data"				# 39
 	.include "sprites/Sprites_Scenes/cenario_ginasio/windows2.data"				# 40
 	.include "sprites/Sprites_Scenes/cenario_ginasio/sand.data"				# 118
+
+	.include "scenes/gym_Tscreen.s"
+	.include "sprites/texts/texto_cena3.data"
 
 	# Player 
 	.include "sprites/Sprites_Scenes/personagens/trainer/layer_back.data"			# 100
@@ -89,6 +101,20 @@
 	
 .text
 FIRST_SETUP:
+	# Begginin History
+	la a0, BLACK_SCREEN
+	jal PRINT_MAP
+	la a0, texto_inicio			
+	li a1, 48
+	li a2, 36
+	li a3, 0xFF000000
+	
+	jal PRINT_SINGLE_IMAGE
+	
+	li a0, 0x1388
+	li a7, 32			# Sleep Action
+	ecall
+	
 	li s9, 0			# Current Pokemon
 	li s0, 12			# Player row
 	li s1, 9			# Player col
@@ -169,7 +195,9 @@ PRINT_SINGLE_IMAGE:
 	# a1 => Horizontal Shift
 	# a2 => Vertical Shift
 	# a3 => Frame
-
+	addi sp, sp, -4
+	sw ra, 0(sp)
+	
 	mv t0, a0
 	lw t1, 4(t0)				# Width
 	lw t2, 0(t0)				# Height
@@ -206,6 +234,8 @@ END_IMAGE_LOOP_COL:
 	li t4, 0				# t4 = 0 => Reset col_counter
 	j LOOP_PRINT_IMAGE
 LOOP_END_PRINT_IMAGE:
+	lw ra, 0(sp)
+	addi sp, sp, 4
 	ret
 
 #=======================+
@@ -347,13 +377,55 @@ CHANGE_CURRENT_LOCATION: # a0 => player_row, a1 => player_col, a2 => scene
 	mv a0, a2
 
 	li t0, 1
-	beq t0, a0, SCENE_1
+	beq t0, a0, SCENE_1_TRANSITION
 	
 	li t0, 2
-	beq t0, a0, SCENE_2
+	beq t0, a0, SCENE_2_TRANSITION
 
 	li t0, 3
-	beq t0, a0, SCENE_3
+	beq t0, a0, SCENE_3_TRANSITION
+
+SCENE_1_TRANSITION:
+	la a0, LAB_TSCREEN
+	jal PRINT_MAP
+	la a0, texto_cena1
+	li a1, 48
+	li a2, 36
+	li a3, 0xFF000000
+	jal PRINT_SINGLE_IMAGE
+	
+	li a0, 0x7D0		# 2s
+	li a7, 32			# Sleep Action
+	ecall
+	j SCENE_1
+
+SCENE_2_TRANSITION:
+	la a0, WILD_TSCREEN
+	jal PRINT_MAP
+	la a0, texto_cena2
+	li a1, 48
+	li a2, 36
+	li a3, 0xFF000000
+	jal PRINT_SINGLE_IMAGE
+	
+	li a0, 0x7D0		# 2s
+	li a7, 32			# Sleep Action
+	ecall
+	j SCENE_2
+	
+SCENE_3_TRANSITION:
+	la a0, GYM_TSCREEN
+	jal PRINT_MAP
+	la a0, texto_cena3
+	li a1, 48
+	li a2, 36
+	li a3, 0xFF000000
+	jal PRINT_SINGLE_IMAGE
+	
+	li a0, 0x7D0		# 2s
+	li a7, 32			# Sleep Action
+	ecall
+	j SCENE_3
 
 SCENE_1:
 	la s2, MAP_1		
@@ -449,15 +521,9 @@ MOVE_PLAYER:
 	jal BLOCK_SELECTION
 
 	li a0, 100			# Wait 100ms
-	# li a7, 32			# Sleep Action
-	# ecall				# Call Sleep
+	li a7, 32			# Sleep Action
+	ecall				# Call Sleep
 	# Alternative ways for SysCall Sleep
-SLEEP:
-	csrr t6, time
-	add a0, a0, t6
-SLEEP_LOOP:
-	csrr t6, time
-	blt t6, a0, SLEEP_LOOP
 
 	mv a0, s0			# Previous Player Row
 	mv a1, s1			# Previous Player Col
@@ -576,6 +642,7 @@ CHANGE_POKEBALL_STATE:
 #	DISPLAY SELECTED POKEMON     |
 #====================================+
 DISPLAY_SELECTED_POKEMON:
+	
 	addi sp, sp, -4
 	sw ra, 0(sp)
 
@@ -609,7 +676,6 @@ DISPLAY_POKEMON_IMAGE:
 	li a2, 30
 	li a3, 0XFF000000
 	jal PRINT_SINGLE_IMAGE
-	
 	lw ra, 0(sp)
 	addi sp, sp, 4
 	ret
@@ -1075,3 +1141,7 @@ STORE_BLOCK_COLOR:			# Store the colors from a single line
 	
 	bne t2, t1, NEW_BLOCK_LINE	# if t1 != t2, then NEW_BLOCK_LINE
 	j END_BLOCK_SELECTION
+
+
+.include "tool/MACROSv21.s"
+.include "tool/SYSTEMV21.s"
