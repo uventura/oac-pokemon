@@ -8,7 +8,9 @@
 	.include "sprites/pokemons/Charmander.data"
 	.include "sprites/pokemons/Squirtle.data"
 	.include "sprites/pokemons/Bulbassauro.data"
-	.include "sprites/pokemons/chat.data" 					
+	.include "sprites/texts/charmander_text.data"
+	.include "sprites/texts/squirtle_text.data"
+	.include "sprites/texts/bulbassauro_text.data"		
 	
 	# Lab_Scenario
 	.include "sprites/Sprites_Scenes/cenario_laboratorio/door1.data"			# 1
@@ -87,6 +89,10 @@
 	.include "sprites/Sprites_Scenes/personagens/trainer/layer_walk_w1.data"		# 108
 	.include "sprites/Sprites_Scenes/personagens/trainer/layer_walk_w2.data"		# 109
 	
+	# Neymar
+	.include "sprites/Sprites_Scenes/personagens/neymar16.data"						# 119
+	.include "sprites/Sprites_Scenes/personagens/fuleco16.data"						# 120
+
 	# Scenes	
 	.include "scenes/scene01.s"
 	.include "scenes/scene02.s"
@@ -111,7 +117,7 @@ FIRST_SETUP:
 	
 	jal PRINT_SINGLE_IMAGE
 	
-	li a0, 0x1388
+	li a0, 0x1388		# 5s
 	li a7, 32			# Sleep Action
 	ecall
 	
@@ -656,11 +662,33 @@ DISPLAY_SELECTED_POKEMON:
 	jal PRINT_MAP
 	
 	li t0, 1
-	beq s9, t0, DISPLAY_BUBASSAURO
+	beq s9, t0, DISPLAY_BUBASSAURO_TEXT
 	li t0, 2
-	beq s9, t0, DISPLAY_CHARMANDER
+	beq s9, t0, DISPLAY_CHARMANDER_TEXT
 	li t0, 3
-	beq s9, t0, DISPLAY_SQUIRTLE
+	beq s9, t0, DISPLAY_SQUIRTLE_TEXT
+
+DISPLAY_BUBASSAURO_TEXT:
+	la a0, bulbassauro_text
+	li a1, 10
+	li a2, 170
+	li a3, 0XFF000000
+	jal PRINT_SINGLE_IMAGE
+	j DISPLAY_BUBASSAURO
+DISPLAY_CHARMANDER_TEXT:
+	la a0, charmander_text
+	li a1, 10
+	li a2, 170
+	li a3, 0XFF000000
+	jal PRINT_SINGLE_IMAGE
+	j DISPLAY_CHARMANDER
+DISPLAY_SQUIRTLE_TEXT:
+	la a0, squirtle_text
+	li a1, 10
+	li a2, 170
+	li a3, 0XFF000000
+	jal PRINT_SINGLE_IMAGE
+	j DISPLAY_SQUIRTLE
 
 DISPLAY_BUBASSAURO:
 	la a0, Bulbassauro
@@ -672,8 +700,8 @@ DISPLAY_SQUIRTLE:
 	la a0, Squirtle
 	j DISPLAY_POKEMON_IMAGE
 DISPLAY_POKEMON_IMAGE:
-	li a1, 30
-	li a2, 30
+	li a1, 80
+	li a2, 20
 	li a3, 0XFF000000
 	jal PRINT_SINGLE_IMAGE
 	lw ra, 0(sp)
@@ -770,6 +798,11 @@ END_PRINT_MAP:
 
 # a0 => Block Line, a1 => Block Col, a2 => Type of Block, a3 => Offset_x, a4 => Offset_y
 BLOCK_SELECTION:
+	# Neymar
+	li t0, 119
+	beq a2, t0, NEYMAR_16
+	li t0, 120
+	beq a2, t0, FULECO_16
 	# Player
 	li t0, 100		
 	beq a2, t0, PLAYER_BACK
@@ -900,6 +933,14 @@ BLOCK_SELECTION:
 	beq a2, t0, GYM_SAND
 
 	ret
+
+# Neymar
+NEYMAR_16:
+	la a2, neymar16
+	j PRINT_BLOCK_SELECTED
+FULECO_16:
+	la a2, fuleco16
+	j PRINT_BLOCK_SELECTED
 # Player
 PLAYER_BACK:
 	la a2, layer_back
