@@ -1,6 +1,7 @@
 .data
 	# beginning text
 	.include "sprites/texts/texto_inicio.data"
+	.include "sprites/black"							# 121
 	.include "scenes/black_screen.s"
 	# Pokemon Choose Scenario
 	.include "scenes/display_pokemon.s"
@@ -8,9 +9,6 @@
 	.include "sprites/pokemons/Charmander.data"
 	.include "sprites/pokemons/Squirtle.data"
 	.include "sprites/pokemons/Bulbassauro.data"
-	.include "sprites/texts/charmander_text.data"
-	.include "sprites/texts/squirtle_text.data"
-	.include "sprites/texts/bulbassauro_text.data"		
 	
 	# Lab_Scenario
 	.include "sprites/Sprites_Scenes/cenario_laboratorio/door1.data"			# 1
@@ -37,9 +35,6 @@
 	.include "sprites/table_lab02.s"							# 115
 	.include "sprites/table_lab03.s"							# 116
 
-	.include "scenes/lab_Tscreen.s"
-	.include "sprites/texts/texto_cena1.data"
-
 	# Wild_Scenario
 	.include "sprites/Sprites_Scenes/cenario_aberto/rass.s"				# 16	
 	.include "sprites/Sprites_Scenes/cenario_aberto/river_edge1.data"			# 17
@@ -60,9 +55,6 @@
 	.include "sprites/Sprites_Scenes/cenario_aberto/sprite_brush.data"			# 32
 	.include "sprites/Sprites_Scenes/cenario_aberto/river_top_side.data"		# 117
 
-	.include "scenes/wild_Tscreen.s"
-	.include "sprites/texts/texto_cena2.data"
-
 	# Gym_Scenario
 	.include "sprites/Sprites_Scenes/cenario_ginasio/colunabot.data"			# 33
 	.include "sprites/Sprites_Scenes/cenario_ginasio/colunato.data"				# 34
@@ -73,9 +65,6 @@
 	.include "sprites/Sprites_Scenes/cenario_ginasio/windows1.data"				# 39
 	.include "sprites/Sprites_Scenes/cenario_ginasio/windows2.data"				# 40
 	.include "sprites/Sprites_Scenes/cenario_ginasio/sand.data"				# 118
-
-	.include "scenes/gym_Tscreen.s"
-	.include "sprites/texts/texto_cena3.data"
 
 	# Player 
 	.include "sprites/Sprites_Scenes/personagens/trainer/layer_back.data"			# 100
@@ -383,55 +372,13 @@ CHANGE_CURRENT_LOCATION: # a0 => player_row, a1 => player_col, a2 => scene
 	mv a0, a2
 
 	li t0, 1
-	beq t0, a0, SCENE_1_TRANSITION
+	beq t0, a0, SCENE_1
 	
 	li t0, 2
-	beq t0, a0, SCENE_2_TRANSITION
+	beq t0, a0, SCENE_2
 
 	li t0, 3
-	beq t0, a0, SCENE_3_TRANSITION
-
-SCENE_1_TRANSITION:
-	la a0, LAB_TSCREEN
-	jal PRINT_MAP
-	la a0, texto_cena1
-	li a1, 48
-	li a2, 36
-	li a3, 0xFF000000
-	jal PRINT_SINGLE_IMAGE
-	
-	li a0, 0x7D0		# 2s
-	li a7, 32			# Sleep Action
-	ecall
-	j SCENE_1
-
-SCENE_2_TRANSITION:
-	la a0, WILD_TSCREEN
-	jal PRINT_MAP
-	la a0, texto_cena2
-	li a1, 48
-	li a2, 36
-	li a3, 0xFF000000
-	jal PRINT_SINGLE_IMAGE
-	
-	li a0, 0x7D0		# 2s
-	li a7, 32			# Sleep Action
-	ecall
-	j SCENE_2
-	
-SCENE_3_TRANSITION:
-	la a0, GYM_TSCREEN
-	jal PRINT_MAP
-	la a0, texto_cena3
-	li a1, 48
-	li a2, 36
-	li a3, 0xFF000000
-	jal PRINT_SINGLE_IMAGE
-	
-	li a0, 0x7D0		# 2s
-	li a7, 32			# Sleep Action
-	ecall
-	j SCENE_3
+	beq t0, a0, SCENE_3
 
 SCENE_1:
 	la s2, MAP_1		
@@ -662,11 +609,11 @@ DISPLAY_SELECTED_POKEMON:
 	jal PRINT_MAP
 	
 	li t0, 1
-	beq s9, t0, DISPLAY_BUBASSAURO_TEXT
+	beq s9, t0, DISPLAY_BUBASSAURO
 	li t0, 2
-	beq s9, t0, DISPLAY_CHARMANDER_TEXT
+	beq s9, t0, DISPLAY_CHARMANDER
 	li t0, 3
-	beq s9, t0, DISPLAY_SQUIRTLE_TEXT
+	beq s9, t0, DISPLAY_SQUIRTLE
 
 DISPLAY_BUBASSAURO_TEXT:
 	la a0, bulbassauro_text
@@ -798,6 +745,9 @@ END_PRINT_MAP:
 
 # a0 => Block Line, a1 => Block Col, a2 => Type of Block, a3 => Offset_x, a4 => Offset_y
 BLOCK_SELECTION:
+	# Just Black
+	li t0, 121
+	beq a2, t0, JUST_BLACK
 	# Neymar
 	li t0, 119
 	beq a2, t0, NEYMAR_16
@@ -933,7 +883,9 @@ BLOCK_SELECTION:
 	beq a2, t0, GYM_SAND
 
 	ret
-
+JUST_BLACK:
+	la a2, black
+	j PRINT_BLOCK_SELECTED
 # Neymar
 NEYMAR_16:
 	la a2, neymar16
@@ -1183,6 +1135,3 @@ STORE_BLOCK_COLOR:			# Store the colors from a single line
 	bne t2, t1, NEW_BLOCK_LINE	# if t1 != t2, then NEW_BLOCK_LINE
 	j END_BLOCK_SELECTION
 
-
-.include "tool/MACROSv21.s"
-.include "tool/SYSTEMV21.s"
