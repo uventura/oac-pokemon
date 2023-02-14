@@ -17,8 +17,8 @@ MAP_3:
 	36,36,36,36,36,36,36,36,36,35,35,36,36,36,36,36,36,36,36,36,
 	
 OBJECT_MAP_3:
-	.byte 94			        # Amount of objects
-	# Bounderies 55
+	.byte 96			        # Amount of objects
+	# Bounderies 60
 	.byte 10, 1, 118, 0, 0		# Character Map => row, col, object, off_x, off_y
 	.byte 10, 2, 118, 0, 0		# Character Map => row, col, object, off_x, off_y
 	.byte 10, 3, 118, 0, 0		# Character Map => row, col, object, off_x, off_y
@@ -129,6 +129,10 @@ OBJECT_MAP_3:
 	.byte 2, 8, 38, 0, 0		# Character Map => row, col, object, off_x, off_y
 	.byte 3, 11, 37, 0, 0		# Character Map => row, col, object, off_x, off_y
 	.byte 2, 11, 38, 0, 0		# Character Map => row, col, object, off_x, off_y
+
+	# Neymar e fuleco
+	.byte 2, 10, 119, 0, 0		# Character Map => row, col, object, off_x, off_y
+	.byte 2, 9, 120, 0, 0		# Character Map => row, col, object, off_x, off_y
 
 LOCATION_CHANGE_3:
 	.byte 2				    		# Amount of locations
