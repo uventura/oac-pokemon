@@ -1,9 +1,23 @@
 .data
-	.include "sprites/Sprites_Scenes/cenario_aberto/rass.s"
-
-	.include "scenes/wild_Tscreen.s"
+	.include "sprites/Sprites_Scenes/cenario_ginasio/sand.data"
+	.include "scenes/gym_battle.s"
+	.include "scenes/black_screen.s"
+	.include "sprites/black.data"							# 121
 	.include "sprites/pokemons/Charmander.data"
+	.include "sprites/pokemons/Bulbassauro.data"
+	.include "sprites/pokemons/Squirtle.data"
+	.include "sprites/pokemons/Fuleco.data"
+	.include "sprites/pokemons/Xatu.data"
+	.include "sprites/Sprites_Scenes/personagens/Neymar_Batalha.data"
+	.include "sprites/Sprites_Scenes/personagens/Neymar_Ganhou.data"
 
+	# chat
+	.include "sprites/texts/chat.data"				# 49
+	.include "sprites/texts/battle_inst.data"
+	.include "sprites/texts/Alfabeto.s"
+	.include "scenes/chat_box.s"
+	.include "scenes/battle_menu.s"
+	.include "scenes/player_win.s"
 	# Bar Level
 	.include "sprites/bar/damage0.s"
 	.include "sprites/bar/damage1.s"
@@ -20,21 +34,61 @@
 	# Fight Types
 
 FIGHT_TYPES:
-	# 1 => fire
-	# 2 => Pycho
+	# 1 => Fire
+	# 2 => Grass
 	# 3 => Water
+	# 4 => Psycho
+	# 5 => Futebol
 	
-	.byte 3			# Number of Special Fights	
-
+	.byte 25			# Number of Special Fights
 	# .byte PLAYER_POKEMON_TYPE, ENEMY_POKEMON_TYPE, VALUE_LOST 
-	.byte 1, 1, -5		# Fire,  Fire,  -1
-	.byte 1, 2, -2		# Fire,  Leaf,  -2
-	.byte 2, 3, -1		# Water, Water, -1
+	.byte 1, 1, -2		# Fire,  Fire,  -2
+	.byte 1, 2, -4		# Fire,  Grass,  -4
+	.byte 1, 3, -1		# Fire, Water, -1
+	.byte 1, 4, -2		# Fire,  Psycho,  -2
+	.byte 1, 5, -1		# Fire, Futebol, -1
+	.byte 2, 1, -1		# Grass, Fire, -1
+	.byte 2, 2, -2		# Grass, Grass, -2
+	.byte 2, 3, -4		# Grass, Water, -4
+	.byte 2, 4, -2		# Grass,  Psycho,  -2
+	.byte 2, 5, -1		# Grass, Futebol, -1
+	.byte 3, 1, -4		# Water, Fire, -1
+	.byte 3, 2, -1		# Water, Grass, -1
+	.byte 3, 3, -2		# Water, Water, -2
+	.byte 3, 4, -2		# Water,  Psycho,  -2
+	.byte 3, 5, -1		# Water, Futebol, -1
+	.byte 4, 1, -2		# Psycho, Fire, -2
+	.byte 4, 2, -2		# Psycho, Grass, -2
+	.byte 4, 3, -2		# Psycho, Water, -2
+	.byte 4, 4, -2		# Psycho,  Psycho,  -2
+	.byte 4, 5, -1		# Psycho, Futebol, -1
+	.byte 5, 1, -4		# Futebol, Fire, -4
+	.byte 5, 2, -5		# Futebol, Grass, -5
+	.byte 5, 3, -2		# Futebol, Water, -2
+	.byte 5, 4, -4		# Futebol,  Psycho,  -4
+	.byte 5, 5, -3		# Futebol, Futebol, -3
+
 
 .text
 MAIN_FIGHT:
 	li s9, 1		# Pokemon Player Number
 	la s10, Charmander	# Pokemon Address
+# Para implementa��o tirar trecho acima e adicionar:
+# 	li t0, 1
+#	beq t0, s9, CHARMANDER_ADDRESS
+# 	li t0, 2
+#	beq t0, s9, BULBASSAURO_ADDRESS
+# 	li t0, 3
+#	beq t0, s9, SQUIRTLE_ADDRESS
+# CHARMANDER_ADDRESS:
+#	la s10, Charmander
+#	ret
+# BULBASSAURO_ADDRESS:
+#	la s10, Bulbassauro
+#	ret
+# SQUIRTLE_ADDRESS:
+#	la s10, Squirtle
+#	ret
 	
 	li a0, 1		# Player should fight
 	li a1, 119		# Enemy
@@ -61,7 +115,7 @@ FIGHT_ENEMY:
 	sw s3, 20(sp)		# Save s3
 
 	li t1, 119		# Charmander Enemy
-	beq a1, t1, ENEMY_1
+	beq a1, t1, ENEMY_RANDOM
 
 END_FIGHT_ENEMY:
 	lw ra, 0(sp)
@@ -73,12 +127,47 @@ END_FIGHT_ENEMY:
 	addi sp, sp, 24
 	ret
 	
+ENEMY_RANDOM:
+	li a0, 5
+	csrr t0, time
+	remu a0, t0, a0
+
+	li t1, 0
+	beq t1, a0, ENEMY_1
+
+	li t1, 1
+	beq t1, a0, ENEMY_2
+
+	li t1, 2
+	beq t1, a0, ENEMY_3
+
+	li t1, 3
+	beq t1, a0, ENEMY_4
+
+	li t1, 4
+	beq t1, a0, ENEMY_5
+
 ENEMY_1:
 	la s1, Charmander		# s1 = Charmander    => Original s1 is in stack
-	li s3, 1			# s3 =  Pokemon Type => Original s3 is in stack
+	li s3, 1				# s3 =  Pokemon Type => Original s3 is in stack
 	j CURRENT_FIGHT
 # [Here You can add other enemies]
-
+ENEMY_2:
+	la s1, Bulbassauro
+	li s3, 2
+	j CURRENT_FIGHT
+ENEMY_3: 
+	la s1, Squirtle
+	li s3, 3
+	j CURRENT_FIGHT
+ENEMY_4: 
+	la s1, Xatu
+	li s3, 4
+	j CURRENT_FIGHT
+ENEMY_5: 
+	la s1, Fuleco
+	li s3, 5
+	j CURRENT_FIGHT
 #==========================+
 #	CURRENT FIGHT      |
 #==========================+
@@ -87,21 +176,27 @@ CURRENT_FIGHT:
 	# RENDER FIGHT SCENE
 	#|=========================================================|
 
-	la a0, WILD_TSCREEN
+	la a0, BATTLE_MENU
 	jal PRINT_MAP
 	
+	la a0, Neymar_Batalha			# a0 = s0 = Enemy 
+	li a1, 200			# Horizontal Shift to Right
+	li a2, 20			# Vertical Shift to Down
+	li a3, 0XFF000000		# Current Frame
+	jal PRINT_SINGLE_IMAGE
+	
 	mv a0, s1			# a0 = s0 = Enemy Pokemon
-	li a1, 150			# Horizontal Shift to Right
-	li a2, 30			# Vertical Shift to Down
+	li a1, 170			# Horizontal Shift to Right
+	li a2, 50			# Vertical Shift to Down
 	li a3, 0XFF000000		# Current Frame
 	jal PRINT_SINGLE_IMAGE
 	
 	mv a0, s10 			# a0 = s10 = Player Pokemon
-	li a1, 20			# Horizontal Shift to Right		
+	li a1, 70			# Horizontal Shift to Right		
 	li a2, 100			# Vertical Shift to Dowm
 	li a3, 0XFF000000		# Current Frame
 	jal PRINT_SINGLE_IMAGE
-	
+
 	la a0, damage0			# Load Full Bar
 	li a1, 130			# Horizontal Shift to Right
 	li a2, 20			# Vertical Shift to Dowm
@@ -118,7 +213,6 @@ CURRENT_FIGHT:
 	# RENDERIZAR AQUI UMA CAIXA QUE INDICA A LETRA QUE DEVE
 	# DEVE SER APERTADA PARA DAR UM ATAQUE
 	#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 	#|=========================================================|
 	
 	li s0, 10			# Player Life
@@ -163,6 +257,15 @@ MAIN_PLAYER_LOST_GAME:
 	# PRINT IMAGE SHOWING THAT PLAYER LOST
 	# STOP FOR SOME TIME
 	#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	la a0, CHAT_BOX
+	jal PRINT_MAP
+
+	la a0, Neymar_Ganhou
+	li a1, 104
+	li a2, 90
+	li a3, 0xFF000000
+	jal PRINT_SINGLE_IMAGE
+
 	j END_CURRENT_FIGHT
 	
 AI_LOST_GAME:
@@ -171,6 +274,15 @@ AI_LOST_GAME:
 	# PRINT IMAGE SHOWING THAT AI LOST
 	# STOP FOR SOME TIME
 	#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	la a0, PLAYER_WIN
+	jal PRINT_MAP
+
+	la a0, Neymar_Ganhou
+	li a1, 110
+	li a2, 90
+	li a3, 0xFF000000
+	jal PRINT_SINGLE_IMAGE
+
 	j END_CURRENT_FIGHT
 
 END_CURRENT_FIGHT:
@@ -190,8 +302,65 @@ GAME_KEYBOARD:
 	li t1, 'x'
 	beq t0, t1, PRESS_SPECIAL_ATACK_X
 
+	li t1, 'c'					# Use item
+	beq t0, t1, PRESS_POTION
+
 	ret
 
+PRESS_POTION:
+	addi s0, s0, 2			# Total of HP restored
+	li t0, 10
+	bgt s0, t0, FULL_LIFE
+	li t0, 9
+	beq s0, t0, BAR9
+	li t0, 8
+	beq s0, t0, BAR8
+	li t0, 7
+	beq s0, t0, BAR7
+	li t0, 6
+	beq s0, t0, BAR6
+	li t0, 5
+	beq s0, t0, BAR5
+	li t0, 4
+	beq s0, t0, BAR4
+	li t0, 3
+	beq s0, t0, BAR3
+	li t0, 2
+	beq s0, t0, BAR2
+	li t0, 1
+	beq s0, t0, BAR1
+	ret
+FULL_LIFE:
+	li a0, 0
+	li s0, 10
+	ret
+BAR1:
+	li a0, 9
+	ret
+BAR2:
+	li a0, 8
+	ret
+BAR3:
+	li a0, 7
+	ret
+BAR4:
+	li a0, 6
+	ret
+BAR5:
+	li a0, 5
+	ret
+BAR6:
+	li a0, 4
+	ret
+BAR7:
+	li a0, 3
+	ret
+BAR8:
+	li a0, 2
+	ret
+BAR9:
+	li a0, 1
+	ret
 #	PLAYER ATACKS
 PRESS_SIMPLE_ATACK_Z:
 	# When this function is running:
@@ -217,9 +386,12 @@ PRESS_SPECIAL_ATACK_X:
 #	AI ATTACK	|
 #=======================+
 AI_ATTACK:
-	li a7, 42
-	li a1, 2
-	ecall
+	# li a7, 42
+	# li a1, 2
+	# ecall
+	li a0, 2
+	csrr t0, time
+	remu a0, t0, a0
 
 	bnez a0, AI_ATTACK_2
 
@@ -230,8 +402,9 @@ AI_ATTACK_2:
 	addi sp, sp, -4
 	sw ra, 0(sp)
 	
-	mv a0, s3		# s2 = Player Pokemon Type
-	mv a1, s2		# s3 = Enemy Pokemon Type
+	mv a0, s3		# s3 = Enemy Pokemon Type
+	mv a1, s2		# s2 = Player Pokemon Type
+
 	jal FIGHT_MATCH
 	
 	add s0, s0, a0		# s1 += a0 => Apply damage on Enemy
@@ -269,8 +442,8 @@ LOOP_FIGHT_MATCH:
 	
 NEXT_LOOP_FIGHT_MATCH:
 	addi t1, t1, 1					# t1 += 1
-	addi t2, t1, 1					# t2 += 1 => Next Match
-	j FIGHT_MATCH
+	addi t2, t2, 3					# t2 += 1 => Next Match
+	j LOOP_FIGHT_MATCH
 
 END_LOOP_FIGHT_MATCH:
 	ret
@@ -285,7 +458,12 @@ DAMAGE_BAR:
 	
 	addi sp, sp, -4
 	sw ra, 0(sp)
-	
+
+DAMAGE_0:
+	li t0, 0
+	bne a0, t0, DAMAGE_1
+	la a0, damage0
+	j PRINT_DAMAGE
 DAMAGE_1:
 	li t0, 1
 	bne a0, t0, DAMAGE_2
@@ -481,13 +659,192 @@ END_PRINT_MAP:
 
 # a0 => Block Line, a1 => Block Col, a2 => Type of Block, a3 => Offset_x, a4 => Offset_y
 BLOCK_SELECTION:
-	li t0, 16
-	beq a2, t0, WILD_CUT_GRASS
-	
+	li t0, 118
+	beq a2, t0, GYM_SAND
+	# Just Black
+	li t0, 121
+	beq a2, t0, JUST_BLACK
+	# chat
+	li t0, 41
+	beq a2, t0, CCHAT_DOWN
+	li t0, 42
+	beq a2, t0, CCHAT_LEFT_DOWN
+	li t0, 43
+	beq a2, t0, CCHAT_LEFT_UP
+	li t0, 44
+	beq a2, t0, CCHAT_LEFT
+	li t0, 45
+	beq a2, t0, CCHAT_MID
+	li t0, 46
+	beq a2, t0, CCHAT_RIGHT_DOWN
+	li t0, 47
+	beq a2, t0, CCHAT_RIGHT_UP
+	li t0, 48
+	beq a2, t0, CCHAT_RIGHT
+	li t0, 49
+	beq a2, t0, CCHAT_UP
+
+	# Alfabeto
+	li t0, 50
+	beq a2, t0, LETRA_A
+	li t0, 51
+	beq a2, t0, LETRA_B
+	li t0, 52
+	beq a2, t0, LETRA_C
+	li t0, 53
+	beq a2, t0, LETRA_D
+	li t0, 54
+	beq a2, t0, LETRA_E
+	li t0, 54
+	beq a2, t0, LETRA_F
+	li t0, 55
+	beq a2, t0, LETRA_G
+	li t0, 56
+	beq a2, t0, LETRA_H
+	li t0, 57
+	beq a2, t0, LETRA_I
+	li t0, 58
+	beq a2, t0, LETRA_J
+	li t0, 59
+	beq a2, t0, LETRA_K
+	li t0, 60
+	beq a2, t0, LETRA_L
+	li t0, 61
+	beq a2, t0, LETRA_M
+	li t0, 62
+	beq a2, t0, LETRA_N
+	li t0, 63
+	beq a2, t0, LETRA_O
+	li t0, 64
+	beq a2, t0, LETRA_P
+	li t0, 65
+	beq a2, t0, LETRA_Q
+	li t0, 66
+	beq a2, t0, LETRA_R
+	li t0, 67
+	beq a2, t0, LETRA_S
+	li t0, 68
+	beq a2, t0, LETRA_T
+	li t0, 69
+	beq a2, t0, LETRA_U
+	li t0, 70
+	beq a2, t0, LETRA_V
+	li t0, 71
+	beq a2, t0, LETRA_X
+	li t0, 72
+	beq a2, t0, LETRA_Y
+	li t0, 73
+	beq a2, t0, LETRA_Z
 	ret
 
-WILD_CUT_GRASS:
-	la a2, rass
+GYM_SAND:
+	la a2, sand
+	j PRINT_BLOCK_SELECTED
+JUST_BLACK:
+	la a2, black
+	j PRINT_BLOCK_SELECTED
+CCHAT_DOWN:
+	la a2, chat_down
+	j PRINT_BLOCK_SELECTED
+CCHAT_LEFT_DOWN:
+	la a2, chat_left_down
+	j PRINT_BLOCK_SELECTED
+CCHAT_LEFT_UP:
+	la a2, chat_left_up
+	j PRINT_BLOCK_SELECTED
+CCHAT_LEFT:
+	la a2, chat_left
+	j PRINT_BLOCK_SELECTED
+CCHAT_MID:
+	la a2, chat_mid
+	j PRINT_BLOCK_SELECTED
+CCHAT_RIGHT_DOWN:
+	la a2, chat_right_down
+	j PRINT_BLOCK_SELECTED
+CCHAT_RIGHT_UP:
+	la a2, chat_right_up
+	j PRINT_BLOCK_SELECTED
+CCHAT_RIGHT:
+	la a2, chat_right
+	j PRINT_BLOCK_SELECTED
+CCHAT_UP:
+	la a2, chat_up
+	j PRINT_BLOCK_SELECTED
+# Alfabeto
+LETRA_A:
+	la a2, A
+	j PRINT_BLOCK_SELECTED
+LETRA_B:
+	la a2, B
+	j PRINT_BLOCK_SELECTED
+LETRA_C:
+	la a2, C
+	j PRINT_BLOCK_SELECTED
+LETRA_D:
+	la a2, D
+	j PRINT_BLOCK_SELECTED
+LETRA_E:
+	la a2, E
+	j PRINT_BLOCK_SELECTED
+LETRA_F:
+	la a2, F
+	j PRINT_BLOCK_SELECTED
+LETRA_G:
+	la a2, G
+	j PRINT_BLOCK_SELECTED
+LETRA_H:
+	la a2, H
+	j PRINT_BLOCK_SELECTED
+LETRA_I:
+	la a2, I
+	j PRINT_BLOCK_SELECTED
+LETRA_J:
+	la a2, J
+	j PRINT_BLOCK_SELECTED
+LETRA_K:
+	la a2, K
+	j PRINT_BLOCK_SELECTED
+LETRA_L:
+	la a2, L
+	j PRINT_BLOCK_SELECTED
+LETRA_M:
+	la a2, M
+	j PRINT_BLOCK_SELECTED
+LETRA_N:
+	la a2, N
+	j PRINT_BLOCK_SELECTED
+LETRA_O:
+	la a2, O
+	j PRINT_BLOCK_SELECTED
+LETRA_P:
+	la a2, P
+	j PRINT_BLOCK_SELECTED
+LETRA_Q:
+	la a2, Q
+	j PRINT_BLOCK_SELECTED
+LETRA_R:
+	la a2, R
+	j PRINT_BLOCK_SELECTED
+LETRA_S:
+	la a2, S
+	j PRINT_BLOCK_SELECTED
+LETRA_T:
+	la a2, T
+	j PRINT_BLOCK_SELECTED
+LETRA_U:
+	la a2, U
+	j PRINT_BLOCK_SELECTED
+LETRA_V:
+	la a2, V
+	j PRINT_BLOCK_SELECTED
+LETRA_X:
+	la a2, X
+	j PRINT_BLOCK_SELECTED
+LETRA_Y:
+	la a2, Y
+	j PRINT_BLOCK_SELECTED
+LETRA_Z:
+	la a2, Z
 	j PRINT_BLOCK_SELECTED
 
 PRINT_BLOCK_SELECTED:

@@ -1,7 +1,11 @@
 .data
+	# Chat
+	.include "sprites/texts/chat.data"				# 130
+	.include "scenes/chat_box.s"
+
 	# beginning text
 	.include "sprites/texts/texto_inicio.data"
-	.include "sprites/black"							# 121
+	.include "sprites/black.data"							# 121
 	.include "scenes/black_screen.s"
 	# Pokemon Choose Scenario
 	.include "scenes/display_pokemon.s"
@@ -65,7 +69,8 @@
 	.include "sprites/Sprites_Scenes/cenario_ginasio/windows1.data"				# 39
 	.include "sprites/Sprites_Scenes/cenario_ginasio/windows2.data"				# 40
 	.include "sprites/Sprites_Scenes/cenario_ginasio/sand.data"				# 118
-
+	.include "scenes/gym_battle.s"
+	
 	# Player 
 	.include "sprites/Sprites_Scenes/personagens/trainer/layer_back.data"			# 100
 	.include "sprites/Sprites_Scenes/personagens/trainer/layer_front.data"			# 101
@@ -97,7 +102,7 @@
 .text
 FIRST_SETUP:
 	# Begginin History
-	la a0, BLACK_SCREEN
+	la a0, CHAT_BOX
 	jal PRINT_MAP
 	la a0, texto_inicio			
 	li a1, 48
@@ -609,28 +614,28 @@ DISPLAY_SELECTED_POKEMON:
 	jal PRINT_MAP
 	
 	li t0, 1
-	beq s9, t0, DISPLAY_BUBASSAURO
-	li t0, 2
 	beq s9, t0, DISPLAY_CHARMANDER
+	li t0, 2
+	beq s9, t0, DISPLAY_BUBASSAURO
 	li t0, 3
 	beq s9, t0, DISPLAY_SQUIRTLE
 
 DISPLAY_BUBASSAURO_TEXT:
-	la a0, bulbassauro_text
+	#la a0, bulbassauro_text
 	li a1, 10
 	li a2, 170
 	li a3, 0XFF000000
 	jal PRINT_SINGLE_IMAGE
 	j DISPLAY_BUBASSAURO
 DISPLAY_CHARMANDER_TEXT:
-	la a0, charmander_text
+	#la a0, charmander_text
 	li a1, 10
 	li a2, 170
 	li a3, 0XFF000000
 	jal PRINT_SINGLE_IMAGE
 	j DISPLAY_CHARMANDER
 DISPLAY_SQUIRTLE_TEXT:
-	la a0, squirtle_text
+	#la a0, squirtle_text
 	li a1, 10
 	li a2, 170
 	li a3, 0XFF000000
@@ -882,7 +887,56 @@ BLOCK_SELECTION:
 	li t0, 118
 	beq a2, t0, GYM_SAND
 
+	# chat
+	li t0, 41
+	beq a2, t0, CCHAT_DOWN
+	li t0, 42
+	beq a2, t0, CCHAT_LEFT_DOWN
+	li t0, 43
+	beq a2, t0, CCHAT_LEFT_UP
+	li t0, 44
+	beq a2, t0, CCHAT_LEFT
+	li t0, 45
+	beq a2, t0, CCHAT_MID
+	li t0, 46
+	beq a2, t0, CCHAT_RIGHT_DOWN
+	li t0, 47
+	beq a2, t0, CCHAT_RIGHT_UP
+	li t0, 48
+	beq a2, t0, CCHAT_RIGHT
+	li t0, 49
+	beq a2, t0, CCHAT_UP
+
 	ret
+# Chat
+CCHAT_DOWN:
+	la a2, chat_down
+	j PRINT_BLOCK_SELECTED
+CCHAT_LEFT_DOWN:
+	la a2, chat_left_down
+	j PRINT_BLOCK_SELECTED
+CCHAT_LEFT_UP:
+	la a2, chat_left_up
+	j PRINT_BLOCK_SELECTED
+CCHAT_LEFT:
+	la a2, chat_left
+	j PRINT_BLOCK_SELECTED
+CCHAT_MID:
+	la a2, chat_mid
+	j PRINT_BLOCK_SELECTED
+CCHAT_RIGHT_DOWN:
+	la a2, chat_right_down
+	j PRINT_BLOCK_SELECTED
+CCHAT_RIGHT_UP:
+	la a2, chat_right_up
+	j PRINT_BLOCK_SELECTED
+CCHAT_RIGHT:
+	la a2, chat_right
+	j PRINT_BLOCK_SELECTED
+CCHAT_UP:
+	la a2, chat_up
+	j PRINT_BLOCK_SELECTED
+
 JUST_BLACK:
 	la a2, black
 	j PRINT_BLOCK_SELECTED
