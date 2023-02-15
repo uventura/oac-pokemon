@@ -1,10 +1,11 @@
+.eqv NoteData           0xFF200178
+.eqv NoteClock          0xFF20017C
 .data
 	# Chat
-	.include "sprites/texts/chat.data"				# 130
+	.include "sprites/texts/chat.data"				# 59
 	.include "scenes/chat_box.s"
-
+	.include "sprites/texts/Alfabeto.s"				# 73
 	# beginning text
-	.include "sprites/texts/texto_inicio.data"
 	.include "sprites/black.data"							# 121
 	.include "scenes/black_screen.s"
 	# Pokemon Choose Scenario
@@ -91,7 +92,13 @@
 	.include "scenes/scene01.s"
 	.include "scenes/scene02.s"
 	.include "scenes/scene03.s"
-
+	.include "scenes/start_text.s"
+	.include "scenes/lab_Tscreen.s"
+	.include "scenes/wild_Tscreen.s"
+	.include "scenes/gym_Tscreen.s"
+	.include "scenes/bulbassauro_text.s"
+	.include "scenes/squirtle_text.s"
+	.include "scenes/charmander_text.s"
 	# Audio
 	.include "audio/oak-s-lab.data"
 	
@@ -102,18 +109,14 @@
 .text
 FIRST_SETUP:
 	# Begginin History
-	la a0, CHAT_BOX
+	la a0, START_TEXT
 	jal PRINT_MAP
-	la a0, texto_inicio			
-	li a1, 48
-	li a2, 36
-	li a3, 0xFF000000
 	
-	jal PRINT_SINGLE_IMAGE
-	
+	ebreak
 	li a0, 0x1388		# 5s
-	li a7, 32			# Sleep Action
-	ecall
+	jal SLEEP
+	# li a7, 32			# Sleep Action
+	# ecall
 	
 	li s9, 0			# Current Pokemon
 	li s0, 12			# Player row
@@ -151,8 +154,7 @@ GAME_SETTING:
 	jal BLOCK_SELECTION
 	
 GAME_LOOP:
-	# li a7, 30
-	# ecall
+	
 	csrr a0, time 		# Alternative way for syscalls time
 
 	# Audio Event
@@ -162,8 +164,7 @@ GAME_LOOP:
 	ble t0, t1, KEYBOARD_EVENT
 	
 	jal AUDIO_GAME
-	# li a7, 30
-	# ecall
+	
 	csrr a0, time		# Alternative way for syscalls time
 
 	mv s8, a0
@@ -185,6 +186,58 @@ EXIT:
 
 ############################################################################
 ############################################################################
+#==================================+
+#	SLEEP	   |
+#==================================+
+SLEEP:
+	csrr t0, time
+	add t1, t0, a0		
+SLEEP_LOOP:	
+	csrr t0, time		
+	blt t0, t1, SLEEP_LOOP	
+	ret
+
+#==================================+
+#	MidiOut	   |
+#==================================+
+midiOutDE2:	li      t0, NoteData
+    		add     t1, zero, zero
+
+    		# Melody = 0
+
+    		# Definicao do Instrumento
+   	 	andi    t2, a2, 0x0000000F
+    		slli    t2, t2, 27
+    		or      t1, t1, t2
+
+    		# Definicao do Volume
+    		andi    t2, a3, 0x0000007F
+    		slli    t2, t2, 20
+    		or      t1, t1, t2
+
+    		# Definicao do Pitch
+    		andi    t2, a0, 0x0000007F
+    		slli    t2, t2, 13
+    		or      t1, t1, t2
+
+    		# Definicao da Duracao
+		li 	t4, 0x1FF
+		slli 	t4, t4, 4
+		addi 	t4, t4, 0x00F			# t4 = 0x00001FFF
+    		and    	t2, a1, t4
+    		or      t1, t1, t2
+
+    		# Guarda a definicao da duracao da nota na Word 1
+    		j       SintMidOut
+
+SintMidOut:	sw	t1, 0(t0)
+
+	    		# Verifica a subida do clock AUD_DACLRCK para o sintetizador receber as definicoes
+	    		li      t2, NoteClock
+Check_AUD_DACLRCK:     	lw      t3, 0(t2)
+    			beq     t3, zero, Check_AUD_DACLRCK
+
+fimmidiOut:    		ret
 
 #==================================+
 #	PRINT SINGLE IMAGE	   |
@@ -259,8 +312,10 @@ AUDIO_GAME: # Uses the saved registers
 	li a2, 28			# Instrument
 	li a3, 120			# Volume
 
-	li a7, 31			# Play note
-	ecall
+	# li a7, 31			# Play note
+	# ecall
+# FPGA way for play note
+	jal midiOutDE2
 
 	addi s7, s7, 8			# Next Note
 
@@ -377,13 +432,44 @@ CHANGE_CURRENT_LOCATION: # a0 => player_row, a1 => player_col, a2 => scene
 	mv a0, a2
 
 	li t0, 1
-	beq t0, a0, SCENE_1
+	beq t0, a0, SCENE_1_TRANSITION
 	
 	li t0, 2
-	beq t0, a0, SCENE_2
+	beq t0, a0, SCENE_2_TRANSITION
 
 	li t0, 3
-	beq t0, a0, SCENE_3
+	beq t0, a0, SCENE_3_TRANSITION
+
+SCENE_1_TRANSITION:
+	la a0, LAB_TSCREEN
+	jal PRINT_MAP
+	
+	li a0, 0x7D0		# 2s
+	jal SLEEP
+	# li a7, 32			# Sleep Action
+	# ecall
+
+	j SCENE_1
+SCENE_2_TRANSITION:
+	la a0, WILD_TSCREEN
+	jal PRINT_MAP
+	
+	li a0, 0x7D0		# 2s
+	jal SLEEP
+	# li a7, 32			# Sleep Action
+	# ecall
+	
+	j SCENE_2
+SCENE_3_TRANSITION:
+	la a0, GYM_TSCREEN
+	jal PRINT_MAP
+	
+	li a0, 0x7D0		# 2s
+	jal SLEEP
+	# li a7, 32			# Sleep Action
+	# ecall
+	
+	j SCENE_3
 
 SCENE_1:
 	la s2, MAP_1		
@@ -479,9 +565,9 @@ MOVE_PLAYER:
 	jal BLOCK_SELECTION
 
 	li a0, 100			# Wait 100ms
-	li a7, 32			# Sleep Action
-	ecall				# Call Sleep
-	# Alternative ways for SysCall Sleep
+	jal SLEEP
+	# li a7, 32			# Sleep Action
+	# ecall				# Call Sleep
 
 	mv a0, s0			# Previous Player Row
 	mv a1, s1			# Previous Player Col
@@ -610,36 +696,27 @@ DISPLAY_SELECTED_POKEMON:
 	lb s9, 0(s9)
 	addi s9, s9, -12
 
-	la a0, DISPLAY_POKEMON_SCENE
-	jal PRINT_MAP
+	# la a0, DISPLAY_POKEMON_SCENE
+	# jal PRINT_MAP
 	
 	li t0, 1
-	beq s9, t0, DISPLAY_CHARMANDER
+	beq s9, t0, DISPLAY_CHARMANDER_TEXT
 	li t0, 2
-	beq s9, t0, DISPLAY_BUBASSAURO
+	beq s9, t0, DISPLAY_BUBASSAURO_TEXT
 	li t0, 3
-	beq s9, t0, DISPLAY_SQUIRTLE
+	beq s9, t0, DISPLAY_SQUIRTLE_TEXT
 
 DISPLAY_BUBASSAURO_TEXT:
-	#la a0, bulbassauro_text
-	li a1, 10
-	li a2, 170
-	li a3, 0XFF000000
-	jal PRINT_SINGLE_IMAGE
+	la a0, BULBASSAURO_TEXT
+	jal PRINT_MAP
 	j DISPLAY_BUBASSAURO
 DISPLAY_CHARMANDER_TEXT:
-	#la a0, charmander_text
-	li a1, 10
-	li a2, 170
-	li a3, 0XFF000000
-	jal PRINT_SINGLE_IMAGE
+	la a0, CHARMANDER_TEXT
+	jal PRINT_MAP
 	j DISPLAY_CHARMANDER
 DISPLAY_SQUIRTLE_TEXT:
-	#la a0, squirtle_text
-	li a1, 10
-	li a2, 170
-	li a3, 0XFF000000
-	jal PRINT_SINGLE_IMAGE
+	la a0, SQUIRTLE_TEXT
+	jal PRINT_MAP
 	j DISPLAY_SQUIRTLE
 
 DISPLAY_BUBASSAURO:
@@ -907,7 +984,136 @@ BLOCK_SELECTION:
 	li t0, 49
 	beq a2, t0, CCHAT_UP
 
+	# Alfabeto
+	li t0, 50
+	beq a2, t0, LETRA_A
+	li t0, 51
+	beq a2, t0, LETRA_B
+	li t0, 52
+	beq a2, t0, LETRA_C
+	li t0, 53
+	beq a2, t0, LETRA_D
+	li t0, 54
+	beq a2, t0, LETRA_E
+	li t0, 74
+	beq a2, t0, LETRA_F
+	li t0, 55
+	beq a2, t0, LETRA_G
+	li t0, 56
+	beq a2, t0, LETRA_H
+	li t0, 57
+	beq a2, t0, LETRA_I
+	li t0, 58
+	beq a2, t0, LETRA_J
+	li t0, 59
+	beq a2, t0, LETRA_K
+	li t0, 60
+	beq a2, t0, LETRA_L
+	li t0, 61
+	beq a2, t0, LETRA_M
+	li t0, 62
+	beq a2, t0, LETRA_N
+	li t0, 63
+	beq a2, t0, LETRA_O
+	li t0, 64
+	beq a2, t0, LETRA_P
+	li t0, 65
+	beq a2, t0, LETRA_Q
+	li t0, 66
+	beq a2, t0, LETRA_R
+	li t0, 67
+	beq a2, t0, LETRA_S
+	li t0, 68
+	beq a2, t0, LETRA_T
+	li t0, 69
+	beq a2, t0, LETRA_U
+	li t0, 70
+	beq a2, t0, LETRA_V
+	li t0, 71
+	beq a2, t0, LETRA_X
+	li t0, 72
+	beq a2, t0, LETRA_Y
+	li t0, 73
+	beq a2, t0, LETRA_Z
+
 	ret
+
+# Alfabeto
+LETRA_A:
+	la a2, A
+	j PRINT_BLOCK_SELECTED
+LETRA_B:
+	la a2, B
+	j PRINT_BLOCK_SELECTED
+LETRA_C:
+	la a2, C
+	j PRINT_BLOCK_SELECTED
+LETRA_D:
+	la a2, D
+	j PRINT_BLOCK_SELECTED
+LETRA_E:
+	la a2, E
+	j PRINT_BLOCK_SELECTED
+LETRA_F:
+	la a2, F
+	j PRINT_BLOCK_SELECTED
+LETRA_G:
+	la a2, G
+	j PRINT_BLOCK_SELECTED
+LETRA_H:
+	la a2, H
+	j PRINT_BLOCK_SELECTED
+LETRA_I:
+	la a2, I
+	j PRINT_BLOCK_SELECTED
+LETRA_J:
+	la a2, J
+	j PRINT_BLOCK_SELECTED
+LETRA_K:
+	la a2, K
+	j PRINT_BLOCK_SELECTED
+LETRA_L:
+	la a2, L
+	j PRINT_BLOCK_SELECTED
+LETRA_M:
+	la a2, M
+	j PRINT_BLOCK_SELECTED
+LETRA_N:
+	la a2, N
+	j PRINT_BLOCK_SELECTED
+LETRA_O:
+	la a2, O
+	j PRINT_BLOCK_SELECTED
+LETRA_P:
+	la a2, P
+	j PRINT_BLOCK_SELECTED
+LETRA_Q:
+	la a2, Q
+	j PRINT_BLOCK_SELECTED
+LETRA_R:
+	la a2, R
+	j PRINT_BLOCK_SELECTED
+LETRA_S:
+	la a2, S
+	j PRINT_BLOCK_SELECTED
+LETRA_T:
+	la a2, T
+	j PRINT_BLOCK_SELECTED
+LETRA_U:
+	la a2, U
+	j PRINT_BLOCK_SELECTED
+LETRA_V:
+	la a2, V
+	j PRINT_BLOCK_SELECTED
+LETRA_X:
+	la a2, X
+	j PRINT_BLOCK_SELECTED
+LETRA_Y:
+	la a2, Y
+	j PRINT_BLOCK_SELECTED
+LETRA_Z:
+	la a2, Z
+	j PRINT_BLOCK_SELECTED
 # Chat
 CCHAT_DOWN:
 	la a2, chat_down

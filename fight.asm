@@ -695,7 +695,7 @@ BLOCK_SELECTION:
 	beq a2, t0, LETRA_D
 	li t0, 54
 	beq a2, t0, LETRA_E
-	li t0, 54
+	li t0, 74
 	beq a2, t0, LETRA_F
 	li t0, 55
 	beq a2, t0, LETRA_G
