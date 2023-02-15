@@ -266,6 +266,9 @@ MAIN_PLAYER_LOST_GAME:
 	li a3, 0xFF000000
 	jal PRINT_SINGLE_IMAGE
 
+	li a0, 0x1388		# 5s
+	jal SLEEP
+
 	j END_CURRENT_FIGHT
 	
 AI_LOST_GAME:
@@ -283,11 +286,24 @@ AI_LOST_GAME:
 	li a3, 0xFF000000
 	jal PRINT_SINGLE_IMAGE
 
+	li a0, 0x1388		# 5s
+	jal SLEEP
+	
 	j END_CURRENT_FIGHT
 
 END_CURRENT_FIGHT:
 	j END_FIGHT_ENEMY
 
+#==================================+
+#	SLEEP	   |
+#==================================+
+SLEEP:
+	csrr t0, time
+	add t1, t0, a0		
+SLEEP_LOOP:	
+	csrr t0, time		
+	blt t0, t1, SLEEP_LOOP	
+	ret
 
 #=========================+
 #	GAME KEYBOARD	  |
